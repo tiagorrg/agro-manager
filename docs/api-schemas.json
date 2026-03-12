@@ -1,0 +1,266 @@
+{
+    "Field": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "code": {
+                "type": "string"
+            },
+            "area": {
+                "type": "number"
+            },
+            "cadastralNumber": {
+                "type": "string"
+            },
+            "coordinates": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "Polygon"
+                        ]
+                    },
+                    "coordinates": {
+                        "type": "array"
+                    }
+                }
+            },
+            "currentCrop": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "required": [
+            "id",
+            "name",
+            "area",
+            "coordinates"
+        ]
+    },
+    "Crop": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "code": {
+                "type": "string"
+            },
+            "growingPeriod": {
+                "type": "number"
+            },
+            "plannedYield": {
+                "type": "number"
+            }
+        }
+    },
+    "AgriculturalOperation": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "number": {
+                "type": "string"
+            },
+            "date": {
+                "type": "string",
+                "format": "date"
+            },
+            "field": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "operationType": {
+                "type": "string",
+                "enum": [
+                    "Посев",
+                    "Обработка",
+                    "Уборка",
+                    "Внесение удобрений",
+                    "Полив"
+                ]
+            },
+            "status": {
+                "type": "string",
+                "enum": [
+                    "План",
+                    "Факт"
+                ]
+            },
+            "crop": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "machinery": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "Harvest": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "date": {
+                "type": "string",
+                "format": "date"
+            },
+            "field": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "area": {
+                        "type": "number"
+                    }
+                }
+            },
+            "crop": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "grossHarvest": {
+                "type": "number"
+            },
+            "yield": {
+                "type": "number"
+            },
+            "quality": {
+                "type": "string"
+            }
+        }
+    },
+    "FieldHistory": {
+        "type": "object",
+        "properties": {
+            "field": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "cropRotation": [
+                {
+                    "year": {
+                        "type": "number"
+                    },
+                    "crop": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    },
+                    "yield": {
+                        "type": "number"
+                    }
+                }
+            ],
+            "operations": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/AgriculturalOperation"
+                }
+            },
+            "harvests": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/Harvest"
+                }
+            }
+        }
+    },
+    "DashboardSummary": {
+        "type": "object",
+        "properties": {
+            "totalArea": {
+                "type": "number"
+            },
+            "activeFields": {
+                "type": "number"
+            },
+            "cropsDistribution": [
+                {
+                    "crop": {
+                        "type": "string"
+                    },
+                    "area": {
+                        "type": "number"
+                    },
+                    "percentage": {
+                        "type": "number"
+                    }
+                }
+            ],
+            "forecastHarvest": {
+                "type": "number"
+            },
+            "recentOperations": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/AgriculturalOperation"
+                }
+            }
+        }
+    }
+}
