@@ -3,6 +3,7 @@ import { useFetch } from "../../shared/lib/useFetch";
 import MetricCard from "../../widgets/dashboard/MetricCard";
 import FieldsMiniMap from "../../widgets/dashboard/FieldsMiniMap";
 import WeatherWidget from "../../widgets/dashboard/WeatherWidget";
+import CropPieChart from "../../widgets/dashboard/CropPieChart";
 
 const icons = {
   area: (
@@ -110,6 +111,8 @@ export default function DashboardPage() {
             />
           </div>
         )}
+
+        {data && <CropPieChart data={data.cropsDistribution} />}
       </aside>
 
     </div>

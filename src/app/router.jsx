@@ -3,11 +3,12 @@ import { useAuth } from "../features/auth";
 import Layout from "./layout";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
+import MapPage from "../pages/Map";
 
-function ProtectedRoute({ children }) {
+function ProtectedRoute({ children, variant }) {
   const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
-  return <Layout>{children}</Layout>;
+  return <Layout variant={variant}>{children}</Layout>;
 }
 
 export default function Router() {
@@ -27,8 +28,14 @@ export default function Router() {
           </ProtectedRoute>
         }
       />
-      {/* Будущие маршруты */}
-      <Route path="/map"      element={<ProtectedRoute><div>Карта</div></ProtectedRoute>} />
+      <Route
+        path="/map"
+        element={
+          <ProtectedRoute variant="fullBleed">
+            <MapPage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/calendar" element={<ProtectedRoute><div>Календарь</div></ProtectedRoute>} />
       <Route
         path="*"
