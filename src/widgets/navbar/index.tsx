@@ -34,7 +34,7 @@ export default function Navbar() {
         </NavLink>
 
         {/* Ссылки */}
-        <ul className="flex items-center gap-1" role="list">
+        <ul className="flex items-center gap-1">
           {NAV_LINKS.map(({ to, label }) => (
             <li key={to}>
               <NavLink

@@ -1,48 +1,23 @@
-import { useState, useEffect, useCallback } from "react";
-import { MapContainer, TileLayer, Polygon, Tooltip, useMap } from "react-leaflet";
+import { useState, useCallback } from "react";
+import { MapContainer, TileLayer, Polygon, Tooltip } from "react-leaflet";
 import { useFetch } from "../../shared/lib/useFetch";
 import { fetchFields } from "../../shared/api/fields";
 import { getCropColor } from "../../shared/config/crops";
+import { getPolygonMeta } from "../../shared/lib/geo";
+import { FitBounds, FlyToField } from "../../shared/ui-kit/map";
+import type { Field } from "../../entities/field/types";
 import "leaflet/dist/leaflet.css";
 
-/** Вычисляет центроид и bounds полигона */
-function getPolygonMeta(coordinates) {
-  const points = coordinates[0];
-  const lats = points.map(([, lat]) => lat);
-  const lngs = points.map(([lng]) => lng);
-  const centroid = [
-    (Math.min(...lats) + Math.max(...lats)) / 2,
-    (Math.min(...lngs) + Math.max(...lngs)) / 2,
-  ];
-  const bounds = points.map(([lng, lat]) => [lat, lng]);
-  return { centroid, bounds };
-}
+type LatLngTuple = [number, number];
 
-/** Компонент внутри карты — подгоняет вид под все поля при загрузке */
-function FitBounds({ fields }) {
-  const map = useMap();
-  useEffect(() => {
-    if (!fields?.length) return;
-    const all = fields.flatMap((f) =>
-      f.coordinates.coordinates[0].map(([lng, lat]) => [lat, lng])
-    );
-    map.fitBounds(all, { padding: [32, 32] });
-  }, [fields, map]);
-  return null;
-}
-
-/** Компонент внутри карты — летит к выбранному полю */
-function FlyToField({ target }) {
-  const map = useMap();
-  useEffect(() => {
-    if (!target) return;
-    map.flyToBounds(target, { padding: [60, 60], maxZoom: 15, duration: 0.8 });
-  }, [target, map]);
-  return null;
+interface FieldCardProps {
+  field: Field;
+  isSelected: boolean;
+  onClick: () => void;
 }
 
 /** Карточка поля в сайдбаре */
-function FieldCard({ field, isSelected, onClick }) {
+function FieldCard({ field, isSelected, onClick }: FieldCardProps) {
   const color = getCropColor(field.currentCrop.name);
   return (
     <li>
@@ -76,10 +51,10 @@ function FieldCard({ field, isSelected, onClick }) {
 
 export default function MapPage() {
   const { data: fields, loading, error } = useFetch(fetchFields);
-  const [selectedId, setSelectedId] = useState(null);
-  const [flyTarget, setFlyTarget] = useState(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [flyTarget, setFlyTarget] = useState<LatLngTuple[] | null>(null);
 
-  const handleSelectField = useCallback((field) => {
+  const handleSelectField = useCallback((field: Field) => {
     const { bounds } = getPolygonMeta(field.coordinates.coordinates);
     setSelectedId(field.id);
     setFlyTarget(bounds);
@@ -170,14 +145,14 @@ export default function MapPage() {
               const color = getCropColor(field.currentCrop.name);
               const isSelected = field.id === selectedId;
               const positions = field.coordinates.coordinates[0].map(
-                ([lng, lat]) => [lat, lng]
+                ([lng, lat]) => [lat, lng] as LatLngTuple
               );
               return (
                 <Polygon
                   key={field.id}
                   positions={positions}
                   pathOptions={{
-                    color: isSelected ? color : color,
+                    color,
                     fillColor: color,
                     fillOpacity: isSelected ? 0.65 : 0.35,
                     weight: isSelected ? 3 : 2,

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "../features/auth";
 import Layout from "./layout";
@@ -5,7 +6,12 @@ import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import MapPage from "../pages/Map";
 
-function ProtectedRoute({ children, variant }) {
+interface ProtectedRouteProps {
+  children: ReactNode;
+  variant?: "default" | "fullBleed";
+}
+
+function ProtectedRoute({ children, variant }: ProtectedRouteProps) {
   const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
   return <Layout variant={variant}>{children}</Layout>;

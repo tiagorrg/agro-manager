@@ -1,12 +1,14 @@
 import { useState, useEffect, useMemo } from "react";
 import { fetchFields } from "../../shared/api/fields";
 import { fetchWeather } from "../../shared/api/weather";
+import type { WeatherData, DailyForecast } from "../../shared/api/weather";
 import { getWeatherInfo, formatWeekday, formatShortDate } from "../../shared/lib/weatherCodes";
+import type { Field } from "../../entities/field/types";
 
 const FORECAST_DAYS = 7;
 
 /** Вычисляет центроид всех координат всех полей */
-function computeCentroid(fields) {
+function computeCentroid(fields: Field[]): { lat: number; lng: number } {
   const points = fields.flatMap((f) => f.coordinates.coordinates[0]);
   const lat = points.reduce((s, [, lat]) => s + lat, 0) / points.length;
   const lng = points.reduce((s, [lng]) => s + lng, 0) / points.length;
@@ -14,7 +16,7 @@ function computeCentroid(fields) {
 }
 
 /** Горизонтальный индикатор осадков */
-function PrecipBar({ value, max }) {
+function PrecipBar({ value, max }: { value: number; max: number }) {
   const pct = max > 0 ? Math.min((value / max) * 100, 100) : 0;
   return (
     <div className="flex items-center gap-1.5 w-full">
@@ -31,10 +33,10 @@ function PrecipBar({ value, max }) {
 
 
 export default function WeatherWidget() {
-  const [centroid, setCentroid] = useState(null);
-  const [weather, setWeather] = useState(null);
+  const [centroid, setCentroid] = useState<{ lat: number; lng: number } | null>(null);
+  const [weather, setWeather] = useState<WeatherData | null>(null);
   const [initLoading, setInitLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Шаг 1 — загружаем поля один раз, вычисляем центроид
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function WeatherWidget() {
       .then((fields) => {
         if (!cancelled) setCentroid(computeCentroid(fields));
       })
-      .catch((e) => {
+      .catch((e: Error) => {
         if (!cancelled) { setError(e.message); setInitLoading(false); }
       });
     return () => { cancelled = true; };
@@ -58,7 +60,7 @@ export default function WeatherWidget() {
       .then((data) => {
         if (!cancelled) { setWeather(data); setInitLoading(false); }
       })
-      .catch((e) => {
+      .catch((e: Error) => {
         if (!cancelled) { setError(e.message); setInitLoading(false); }
       });
 
@@ -88,7 +90,7 @@ export default function WeatherWidget() {
     );
   }
 
-  const { current, daily } = weather;
+  const { current, daily } = weather!;
   const currentInfo = getWeatherInfo(current.weatherCode);
 
   return (
@@ -97,7 +99,7 @@ export default function WeatherWidget() {
       <div className="px-5 pt-5 pb-3 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-gray-700">Погода на полях</h3>
         <span className="text-[10px] text-gray-400">
-          Open-Meteo · {weather.lat.toFixed(2)}°N {weather.lng.toFixed(2)}°E
+          Open-Meteo · {weather!.lat.toFixed(2)}°N {weather!.lng.toFixed(2)}°E
         </span>
       </div>
 
@@ -125,7 +127,7 @@ export default function WeatherWidget() {
           Прогноз на 7 дней
         </p>
         <div className="flex gap-2">
-          {daily.map((day) => {
+          {daily.map((day: DailyForecast) => {
             const info = getWeatherInfo(day.weatherCode);
             return (
               <div
@@ -153,7 +155,7 @@ export default function WeatherWidget() {
           Осадки (мм)
         </p>
         <div className="flex flex-col gap-1.5">
-          {daily.map((day) => (
+          {daily.map((day: DailyForecast) => (
             <div key={day.date} className="flex items-center gap-2">
               <span className="text-[11px] text-gray-500 w-14 shrink-0 capitalize">
                 {formatWeekday(day.date)} {formatShortDate(day.date)}

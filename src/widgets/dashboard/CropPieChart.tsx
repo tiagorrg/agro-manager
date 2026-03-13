@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getCropColor } from "../../shared/config/crops";
+import type { CropDistribution } from "../../shared/api/dashboard";
 
 const SIZE = 160;
 const CX = SIZE / 2;
@@ -9,7 +10,13 @@ const STROKE_WIDTH = 26;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 const GAP = 3;
 
-function DonutChart({ data, total, onHover }) {
+interface DonutChartProps {
+  data: CropDistribution[];
+  total: number;
+  onHover: (entry: CropDistribution | null) => void;
+}
+
+function DonutChart({ data, total, onHover }: DonutChartProps) {
   let cumulative = 0;
 
   return (
@@ -48,8 +55,12 @@ function DonutChart({ data, total, onHover }) {
   );
 }
 
-export default function CropPieChart({ data }) {
-  const [hovered, setHovered] = useState(null);
+interface CropPieChartProps {
+  data: CropDistribution[];
+}
+
+export default function CropPieChart({ data }: CropPieChartProps) {
+  const [hovered, setHovered] = useState<CropDistribution | null>(null);
   if (!data?.length) return null;
 
   const total = data.reduce((s, d) => s + d.area, 0);

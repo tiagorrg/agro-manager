@@ -1,25 +1,10 @@
-import { useEffect } from "react";
-import { MapContainer, TileLayer, Polygon, Tooltip, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Polygon, Tooltip } from "react-leaflet";
 import { useNavigate } from "react-router-dom";
 import { useFetch } from "../../shared/lib/useFetch";
 import { fetchFields } from "../../shared/api/fields";
 import { getCropColor, CROP_COLORS } from "../../shared/config/crops";
+import { FitBounds } from "../../shared/ui-kit/map";
 import "leaflet/dist/leaflet.css";
-
-// Подгоняет bounds карты под все полигоны
-function FitBounds({ fields }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (!fields?.length) return;
-    const allPoints = fields.flatMap((f) =>
-      f.coordinates.coordinates[0].map(([lng, lat]) => [lat, lng])
-    );
-    if (allPoints.length) map.fitBounds(allPoints, { padding: [16, 16] });
-  }, [fields, map]);
-
-  return null;
-}
 
 function MapLegend() {
   const entries = Object.entries(CROP_COLORS);
@@ -82,7 +67,7 @@ export default function FieldsMiniMap() {
               const color = getCropColor(field.currentCrop.name);
               // GeoJSON: [lng, lat] → Leaflet: [lat, lng]
               const positions = field.coordinates.coordinates[0].map(
-                ([lng, lat]) => [lat, lng]
+                ([lng, lat]) => [lat, lng] as [number, number]
               );
               return (
                 <Polygon

@@ -1,9 +1,15 @@
 import clsx from "clsx";
+import type { ReactNode } from "react";
 
-/**
- * @param {{ label: string, value: string, unit?: string, trend?: number|null, icon: React.ReactNode }} props
- */
-export default function MetricCard({ label, value, unit, trend, icon }) {
+interface MetricCardProps {
+  label: string;
+  value: string;
+  unit?: string;
+  trend?: number | null;
+  icon: ReactNode;
+}
+
+export default function MetricCard({ label, value, unit, trend, icon }: MetricCardProps) {
   const trendPositive = trend !== null && trend !== undefined && trend > 0;
   const trendNegative = trend !== null && trend !== undefined && trend < 0;
 

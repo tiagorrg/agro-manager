@@ -1,6 +1,12 @@
+import type { ReactNode } from "react";
 import Navbar from "../widgets/navbar";
 
-export default function Layout({ children, variant = "default" }) {
+interface LayoutProps {
+  children: ReactNode;
+  variant?: "default" | "fullBleed";
+}
+
+export default function Layout({ children, variant = "default" }: LayoutProps) {
   return (
     <div className={`bg-default flex flex-col ${variant === "fullBleed" ? "h-screen overflow-hidden" : "min-h-screen"}`}>
       <Navbar />
