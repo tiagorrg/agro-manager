@@ -37,7 +37,7 @@ export default function FieldsMiniMap() {
       </div>
 
       {/* Карта */}
-      <div className="relative h-64 mx-5">
+      <div className="relative h-64 mx-5 isolate">
         {loading && (
           <div className="absolute inset-0 bg-gray-100 rounded-xl animate-pulse flex items-center justify-center text-gray-400 text-sm">
             Загрузка карты...
