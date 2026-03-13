@@ -1,10 +1,11 @@
-import { useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { MapContainer, TileLayer, Polygon, Tooltip } from "react-leaflet";
+import type { Map as LeafletMap } from "leaflet";
 import { useFetch } from "../../shared/lib/useFetch";
 import { fetchFields } from "../../shared/api/fields";
 import { getCropColor } from "../../shared/config/crops";
 import { getPolygonMeta } from "../../shared/lib/geo";
-import { FitBounds, FlyToField } from "../../shared/ui-kit/map";
+import { FitBounds } from "../../shared/ui-kit/map";
 import type { Field } from "../../entities/field/types";
 import "leaflet/dist/leaflet.css";
 
@@ -52,13 +53,37 @@ function FieldCard({ field, isSelected, onClick }: FieldCardProps) {
 export default function MapPage() {
   const { data: fields, loading, error } = useFetch(fetchFields);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [flyTarget, setFlyTarget] = useState<LatLngTuple[] | null>(null);
+  const mapRef = useRef<LeafletMap | null>(null);
 
   const handleSelectField = useCallback((field: Field) => {
     const { bounds } = getPolygonMeta(field.coordinates.coordinates);
     setSelectedId(field.id);
-    setFlyTarget(bounds);
+    const map = mapRef.current;
+    if (map) {
+      map.stop();
+      map.fitBounds(bounds, { padding: [60, 60], maxZoom: 15, animate: true, duration: 0.4 });
+    }
   }, []);
+
+  useEffect(() => {
+    if (!fields?.length) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+      e.preventDefault();
+      const currentIndex = fields.findIndex((f) => f.id === selectedId);
+      let nextIndex: number;
+      if (currentIndex === -1) {
+        nextIndex = e.key === "ArrowDown" ? 0 : fields.length - 1;
+      } else {
+        nextIndex = e.key === "ArrowDown"
+          ? (currentIndex + 1) % fields.length
+          : (currentIndex - 1 + fields.length) % fields.length;
+      }
+      handleSelectField(fields[nextIndex]);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [fields, selectedId, handleSelectField]);
 
   const totalArea = fields
     ? fields.reduce((s, f) => s + f.area, 0).toLocaleString("ru")
@@ -73,6 +98,13 @@ export default function MapPage() {
           {fields && (
             <p className="text-xs text-gray-400 mt-0.5">
               {fields.length} пол. · {totalArea} га
+            </p>
+          )}
+          {fields && (
+            <p className="text-[10px] text-gray-300 mt-1.5 flex items-center gap-1">
+              <kbd className="inline-flex items-center justify-center w-4 h-4 rounded border border-gray-200 text-[9px] font-mono text-gray-400 bg-gray-50">↑</kbd>
+              <kbd className="inline-flex items-center justify-center w-4 h-4 rounded border border-gray-200 text-[9px] font-mono text-gray-400 bg-gray-50">↓</kbd>
+              переключение между полями
             </p>
           )}
         </div>
@@ -129,6 +161,7 @@ export default function MapPage() {
       <div className="flex-1 relative">
         {fields && (
           <MapContainer
+            ref={mapRef}
             center={[46.26, 39.52]}
             zoom={13}
             className="h-full w-full"
@@ -139,7 +172,6 @@ export default function MapPage() {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             />
             <FitBounds fields={fields} />
-            <FlyToField target={flyTarget} />
 
             {fields.map((field) => {
               const color = getCropColor(field.currentCrop.name);

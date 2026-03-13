@@ -22,6 +22,7 @@ export function FlyToField({ target }: { target: LatLngTuple[] | null }) {
   const map = useMap();
   useEffect(() => {
     if (!target) return;
+    map.stop();
     map.flyToBounds(target, { padding: [60, 60], maxZoom: 15, duration: 0.8 });
   }, [target, map]);
   return null;
