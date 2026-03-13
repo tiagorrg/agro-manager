@@ -5,6 +5,7 @@ import Layout from "./layout";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import MapPage from "../pages/Map";
+import FieldDetailPage from "../pages/FieldDetail";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -39,6 +40,14 @@ export default function Router() {
         element={
           <ProtectedRoute variant="fullBleed">
             <MapPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/fields/:id"
+        element={
+          <ProtectedRoute>
+            <FieldDetailPage />
           </ProtectedRoute>
         }
       />

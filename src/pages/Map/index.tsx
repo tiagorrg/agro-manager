@@ -1,12 +1,13 @@
 import { useRef, useState, useCallback, useEffect } from "react";
-import { MapContainer, TileLayer, Polygon, Tooltip } from "react-leaflet";
+import { MapContainer, TileLayer, Polygon, Popup } from "react-leaflet";
 import type { Map as LeafletMap } from "leaflet";
+import { useNavigate } from "react-router-dom";
 import { useFetch } from "../../shared/lib/useFetch";
-import { fetchFields } from "../../shared/api/fields";
+import { fetchFields, fetchFieldDetail } from "../../shared/api/fields";
 import { getCropColor } from "../../shared/config/crops";
 import { getPolygonMeta } from "../../shared/lib/geo";
 import { FitBounds } from "../../shared/ui-kit/map";
-import type { Field } from "../../entities/field/types";
+import type { Field, FieldDetail } from "../../entities/field/types";
 import "leaflet/dist/leaflet.css";
 
 type LatLngTuple = [number, number];
@@ -30,7 +31,6 @@ function FieldCard({ field, isSelected, onClick }: FieldCardProps) {
             : "hover:bg-gray-50"
         }`}
       >
-        {/* Цветная полоска культуры */}
         <span
           className="w-1 self-stretch rounded-full shrink-0 mt-0.5"
           style={{ backgroundColor: color }}
@@ -50,19 +50,65 @@ function FieldCard({ field, isSelected, onClick }: FieldCardProps) {
   );
 }
 
+interface FieldPopupProps {
+  field: Field;
+  detail: FieldDetail | null;
+}
+
+/** Содержимое popup на карте */
+function FieldPopupContent({ field, detail }: FieldPopupProps) {
+  const navigate = useNavigate();
+  const lastOp = detail?.operations
+    .slice()
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0] ?? null;
+
+  return (
+    <div className="min-w-[190px]">
+      <p className="font-semibold text-gray-800 text-sm leading-tight">{field.name}</p>
+      <div className="mt-2 space-y-1 text-xs text-gray-500">
+        <p>
+          <span className="text-gray-400">Культура: </span>
+          {field.currentCrop.name}
+        </p>
+        <p>
+          <span className="text-gray-400">Площадь: </span>
+          {field.area} га
+        </p>
+        <p>
+          <span className="text-gray-400">Последняя операция: </span>
+          {!detail ? (
+            <span className="text-gray-300">загрузка...</span>
+          ) : lastOp ? (
+            `${lastOp.type} · ${new Date(lastOp.date).toLocaleDateString("ru")}`
+          ) : "—"}
+        </p>
+      </div>
+      <button
+        onClick={() => navigate(`/fields/${field.id}`)}
+        className="mt-3 w-full text-center text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 rounded-lg py-1.5 transition-colors"
+      >
+        Подробнее →
+      </button>
+    </div>
+  );
+}
+
 export default function MapPage() {
   const { data: fields, loading, error } = useFetch(fetchFields);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedDetail, setSelectedDetail] = useState<FieldDetail | null>(null);
   const mapRef = useRef<LeafletMap | null>(null);
 
   const handleSelectField = useCallback((field: Field) => {
     const { bounds } = getPolygonMeta(field.coordinates.coordinates);
     setSelectedId(field.id);
+    setSelectedDetail(null);
     const map = mapRef.current;
     if (map) {
       map.stop();
       map.fitBounds(bounds, { padding: [60, 60], maxZoom: 15, animate: true, duration: 0.4 });
     }
+    fetchFieldDetail(field.id).then(setSelectedDetail).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -194,11 +240,12 @@ export default function MapPage() {
                     click: () => handleSelectField(field),
                   }}
                 >
-                  <Tooltip sticky>
-                    <span className="font-medium">{field.name}</span>
-                    <br />
-                    {field.currentCrop.name} · {field.area} га
-                  </Tooltip>
+                  <Popup autoPan={false}>
+                    <FieldPopupContent
+                      field={field}
+                      detail={isSelected ? selectedDetail : null}
+                    />
+                  </Popup>
                 </Polygon>
               );
             })}
