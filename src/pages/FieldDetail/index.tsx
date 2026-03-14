@@ -1,10 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useFetch } from "../../shared/lib/useFetch";
 import { fetchFieldDetail } from "../../shared/api/fields";
-import { getCropColor } from "../../shared/config/crops";
-import MetricCard from "../../widgets/dashboard/MetricCard";
-import { IconArea, IconHarvest, IconOps, IconFields } from "../../shared/ui-kit/icons";
-import { OperationsTable } from "./components/OperationsTable";
+import FieldHeader from "../../components/FieldHeader";
+import FieldMetrics from "../../components/FieldMetrics";
+import OperationsTable from "../../components/OperationsTable";
 
 export default function FieldDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -38,50 +37,8 @@ export default function FieldDetailPage() {
 
       {field && (
         <>
-          {/* Заголовок */}
-          <div className="flex items-start gap-3 mb-6">
-            <span
-              className="w-1.5 self-stretch rounded-full shrink-0 mt-1"
-              style={{ backgroundColor: getCropColor(field.currentCrop.name) }}
-            />
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800">{field.name}</h1>
-              <p className="text-sm text-gray-400 mt-0.5">
-                {field.currentCrop.name} · {field.area} га
-                {field.cadastralNumber && ` · ${field.cadastralNumber}`}
-              </p>
-            </div>
-          </div>
-
-          {/* Метрики */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <MetricCard
-              label="Площадь"
-              value={String(field.area)}
-              unit="га"
-              icon={<IconArea />}
-            />
-            <MetricCard
-              label="Культура"
-              value={field.currentCrop.name}
-              unit="текущий сезон"
-              icon={<IconHarvest />}
-            />
-            <MetricCard
-              label="Операций"
-              value={String(field.operations.length)}
-              unit="всего"
-              icon={<IconOps />}
-            />
-            <MetricCard
-              label="Урожаев"
-              value={String(field.harvests.length)}
-              unit="сезонов"
-              icon={<IconFields />}
-            />
-          </div>
-
-          {/* Операции */}
+          <FieldHeader field={field} />
+          <FieldMetrics field={field} />
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
             <h2 className="text-sm font-semibold text-gray-700 mb-3">Операции</h2>
             <OperationsTable operations={field.operations} />

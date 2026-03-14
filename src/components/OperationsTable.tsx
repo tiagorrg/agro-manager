@@ -1,10 +1,10 @@
-import type { Operation } from "../../../entities/operation/types";
+import type { Operation } from "../entities/operation/types";
 
 interface OperationsTableProps {
   operations: Operation[];
 }
 
-export function OperationsTable({ operations }: OperationsTableProps) {
+export default function OperationsTable({ operations }: OperationsTableProps) {
   if (operations.length === 0) {
     return <p className="text-xs text-gray-400">Нет данных</p>;
   }
