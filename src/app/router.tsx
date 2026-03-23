@@ -7,6 +7,7 @@ import Dashboard from "../pages/Dashboard";
 import MapPage from "../pages/Map";
 import FieldDetailPage from "../pages/FieldDetail";
 import CalendarPage from "../pages/Calendar";
+import ReportsPage from "../pages/Reports";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -57,6 +58,14 @@ export default function Router() {
         element={
           <ProtectedRoute>
             <CalendarPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/reports"
+        element={
+          <ProtectedRoute>
+            <ReportsPage />
           </ProtectedRoute>
         }
       />

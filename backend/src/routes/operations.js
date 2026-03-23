@@ -3,6 +3,7 @@ const router = express.Router();
 const operationsController = require('../controllers/operationsController');
 
 router.get('/', operationsController.getAll);
+router.post('/', operationsController.create);
 router.get('/:id', operationsController.getById);
 router.patch('/:id/status', operationsController.patchStatus);
 

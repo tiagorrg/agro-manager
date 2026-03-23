@@ -6,6 +6,7 @@ const NAV_LINKS = [
   { to: "/dashboard", label: "Дашборд" },
   { to: "/map",       label: "Карта"   },
   { to: "/calendar",  label: "Календарь" },
+  { to: "/reports",   label: "Отчёты"  },
 ];
 
 export default function Navbar() {

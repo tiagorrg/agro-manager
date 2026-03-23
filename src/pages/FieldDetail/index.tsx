@@ -4,7 +4,9 @@ import { fetchFieldDetail } from "../../shared/api/fields";
 import FieldHeader from "../../components/FieldHeader";
 import FieldMetrics from "../../components/FieldMetrics";
 import OperationsTable from "../../components/OperationsTable";
+import FieldEditModal from "../../components/FieldEditModal";
 import type { FieldDetail } from "../../entities/field/types";
+import type { Field } from "../../entities/field/types";
 
 export default function FieldDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -12,6 +14,7 @@ export default function FieldDetailPage() {
   const [field, setField] = useState<FieldDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -50,9 +53,20 @@ export default function FieldDetailPage() {
         <div className="text-red-400 text-sm">Не удалось загрузить данные поля</div>
       )}
 
+      {field && editOpen && (
+        <FieldEditModal
+          field={field}
+          onClose={() => setEditOpen(false)}
+          onSave={(updated: Field) => {
+            setField((prev) => prev ? { ...prev, ...updated } : prev);
+            setEditOpen(false);
+          }}
+        />
+      )}
+
       {field && (
         <>
-          <FieldHeader field={field} />
+          <FieldHeader field={field} onEdit={() => setEditOpen(true)} />
           <FieldMetrics field={field} />
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
             <h2 className="text-sm font-semibold text-gray-700 mb-3">Операции</h2>

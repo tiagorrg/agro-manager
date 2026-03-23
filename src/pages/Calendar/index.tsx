@@ -10,6 +10,7 @@ import CalendarHeader from "../../components/CalendarHeader";
 import CalendarWeekGrid from "../../components/CalendarWeekGrid";
 import CalendarDayPanel from "../../components/CalendarDayPanel";
 import CalendarSidebar from "../../components/CalendarSidebar";
+import NewTaskModal from "../../components/NewTaskModal";
 
 const ALL_TYPES = new Set<OperationType>(["Посев", "Обработка", "Уборка", "ВнесениеУдобрений"]);
 
@@ -36,6 +37,7 @@ export default function CalendarPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTypes, setActiveTypes] = useState<Set<OperationType>>(ALL_TYPES);
+  const [showNewTask, setShowNewTask] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -124,6 +126,11 @@ export default function CalendarPage() {
     );
   }, [filteredOps, selectedDay]);
 
+  const handleCreate = (op: CalendarOperation) => {
+    setOperations((prev) => [...prev, op]);
+    setShowNewTask(false);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <CalendarHeader
@@ -131,7 +138,16 @@ export default function CalendarPage() {
         onToday={goToToday}
         onPrev={goToPrev}
         onNext={goToNext}
+        onNewTask={() => setShowNewTask(true)}
       />
+
+      {showNewTask && (
+        <NewTaskModal
+          defaultDate={selectedDay?.toISOString().slice(0, 10)}
+          onClose={() => setShowNewTask(false)}
+          onCreate={handleCreate}
+        />
+      )}
 
       <div className="flex gap-5 items-start">
         {/* Левая боковая панель */}

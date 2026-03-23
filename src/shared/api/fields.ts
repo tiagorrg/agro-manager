@@ -15,3 +15,15 @@ export const fetchFields = (): Promise<Field[]> => {
 };
 
 export const fetchFieldDetail = (id: string) => apiClient.get<FieldDetail>(`/fields/${id}`);
+
+export interface UpdateFieldInput {
+  name?: string;
+  area?: number;
+  cadastralNumber?: string;
+}
+
+export const updateField = async (id: string, data: UpdateFieldInput): Promise<Field> => {
+  const result = await apiClient.put<Field>(`/fields/${id}`, data);
+  fieldsCache = null; // invalidate list cache
+  return result;
+};

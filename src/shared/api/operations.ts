@@ -16,8 +16,19 @@ export interface CalendarOperation {
   crop: { id: string; name: string } | null;
 }
 
+export interface CreateOperationInput {
+  fieldId: string;
+  type: OperationType;
+  date: string;
+  timeStart?: string;
+  timeEnd?: string;
+}
+
 export const fetchOperations = (): Promise<CalendarOperation[]> =>
   apiClient.get<CalendarOperation[]>("/operations");
+
+export const createOperation = (data: CreateOperationInput): Promise<CalendarOperation> =>
+  apiClient.post<CalendarOperation>("/operations", data);
 
 export const patchOperationStatus = (id: string, calendarStatus: CalendarStatus): Promise<CalendarOperation> =>
   apiClient.patch<CalendarOperation>(`/operations/${id}/status`, { calendarStatus });
