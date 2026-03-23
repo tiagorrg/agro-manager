@@ -6,6 +6,7 @@ import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import MapPage from "../pages/Map";
 import FieldDetailPage from "../pages/FieldDetail";
+import CalendarPage from "../pages/Calendar";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -51,7 +52,14 @@ export default function Router() {
           </ProtectedRoute>
         }
       />
-      <Route path="/calendar" element={<ProtectedRoute><div>Календарь</div></ProtectedRoute>} />
+      <Route
+        path="/calendar"
+        element={
+          <ProtectedRoute>
+            <CalendarPage />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="*"
         element={<Navigate to={user ? "/dashboard" : "/login"} replace />}

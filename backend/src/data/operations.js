@@ -19,6 +19,15 @@ const operations = [
   // Восточное (field4) — ячмень
   { id: 'op12', fieldId: 'field4', date: '2025-04-10', type: 'Посев',                status: 'Факт', cropId: 'crp4', equipmentId: 'eq1' },
   { id: 'op13', fieldId: 'field4', date: '2025-07-10', type: 'Уборка',               status: 'Факт', cropId: 'crp4', equipmentId: 'eq2' },
+
+  // Текущий период (март 2026) — для демонстрации в Календаре
+  { id: 'op14', fieldId: 'field1', date: '2026-03-18', type: 'ВнесениеУдобрений',   status: 'Факт', cropId: 'crp1', equipmentId: 'eq5' },
+  { id: 'op15', fieldId: 'field2', date: '2026-03-19', type: 'Обработка',            status: 'Факт', cropId: 'crp2', equipmentId: 'eq3' },
+  { id: 'op16', fieldId: 'field3', date: '2026-03-20', type: 'Посев',                status: 'План', cropId: 'crp3', equipmentId: 'eq1' },
+  { id: 'op17', fieldId: 'field1', date: '2026-03-21', type: 'Обработка',            status: 'План', cropId: 'crp1', equipmentId: 'eq3' },
+  { id: 'op18', fieldId: 'field1', date: '2026-03-21', type: 'ВнесениеУдобрений',   status: 'План', cropId: 'crp1', equipmentId: 'eq5' },
+  { id: 'op19', fieldId: 'field2', date: '2026-03-24', type: 'Посев',                status: 'План', cropId: 'crp2', equipmentId: 'eq1' },
+  { id: 'op20', fieldId: 'field3', date: '2026-03-25', type: 'ВнесениеУдобрений',   status: 'План', cropId: 'crp3', equipmentId: 'eq5' },
 ];
 
 module.exports = operations;
