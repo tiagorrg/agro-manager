@@ -3,10 +3,11 @@ import { useAuth } from "../../features/auth";
 import logo from "../../shared/assets/logo.svg";
 
 const NAV_LINKS = [
-  { to: "/dashboard", label: "Дашборд" },
-  { to: "/map",       label: "Карта"   },
+  { to: "/dashboard", label: "Дашборд"   },
+  { to: "/map",       label: "Карта"     },
+  { to: "/fields",    label: "Поля"      },
   { to: "/calendar",  label: "Календарь" },
-  { to: "/reports",   label: "Отчёты"  },
+  { to: "/reports",   label: "Отчёты"   },
 ];
 
 export default function Navbar() {

@@ -60,6 +60,20 @@ exports.create = (req, res) => {
   res.status(201).json(enrich(op));
 };
 
+exports.reschedule = (req, res) => {
+  const op = operations.find(o => o.id === req.params.id);
+  if (!op) return res.status(404).json({ error: 'Операция не найдена' });
+
+  const { date, timeStart, timeEnd } = req.body;
+  if (!date) return res.status(400).json({ error: 'Необходима дата' });
+
+  op.date = date;
+  if (timeStart !== undefined) op.timeStart = timeStart || null;
+  if (timeEnd !== undefined) op.timeEnd = timeEnd || null;
+
+  res.json(enrich(op));
+};
+
 exports.patchStatus = (req, res) => {
   const op = operations.find(o => o.id === req.params.id);
   if (!op) return res.status(404).json({ error: 'Операция не найдена' });

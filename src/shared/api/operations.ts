@@ -30,5 +30,13 @@ export const fetchOperations = (): Promise<CalendarOperation[]> =>
 export const createOperation = (data: CreateOperationInput): Promise<CalendarOperation> =>
   apiClient.post<CalendarOperation>("/operations", data);
 
+export const rescheduleOperation = (
+  id: string,
+  date: string,
+  timeStart?: string,
+  timeEnd?: string,
+): Promise<CalendarOperation> =>
+  apiClient.patch<CalendarOperation>(`/operations/${id}/reschedule`, { date, timeStart, timeEnd });
+
 export const patchOperationStatus = (id: string, calendarStatus: CalendarStatus): Promise<CalendarOperation> =>
   apiClient.patch<CalendarOperation>(`/operations/${id}/status`, { calendarStatus });

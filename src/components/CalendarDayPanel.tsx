@@ -1,5 +1,7 @@
+import { useState } from "react";
 import type { CalendarOperation, CalendarStatus } from "../shared/api/operations";
 import type { OperationType } from "../entities/operation/types";
+import RescheduleModal from "./RescheduleModal";
 
 const TYPE_STYLES: Record<OperationType, { bg: string; text: string; border: string }> = {
   "Посев":              { bg: "bg-green-50",  text: "text-green-700",  border: "border-green-200" },
@@ -31,17 +33,26 @@ function parseHour(time?: string): number {
 interface OperationCardProps {
   op: CalendarOperation;
   onStatusChange: (id: string, status: CalendarStatus) => void;
+  onReschedule: (id: string, date: string, timeStart?: string, timeEnd?: string) => void;
 }
 
-function OperationCard({ op, onStatusChange }: OperationCardProps) {
+function OperationCard({ op, onStatusChange, onReschedule }: OperationCardProps) {
+  const [rescheduleOpen, setRescheduleOpen] = useState(false);
   const typeStyle = TYPE_STYLES[op.type];
   const statusCfg = STATUS_CONFIG[op.calendarStatus];
 
-  const handleReschedule = () => {
-    window.alert(`Функция переноса операции "${op.type}" (${op.field?.name ?? op.fieldId}) будет доступна в следующей версии.`);
-  };
-
   return (
+    <>
+    {rescheduleOpen && (
+      <RescheduleModal
+        op={op}
+        onClose={() => setRescheduleOpen(false)}
+        onConfirm={(id, date, timeStart, timeEnd) => {
+          onReschedule(id, date, timeStart, timeEnd);
+          setRescheduleOpen(false);
+        }}
+      />
+    )}
     <div className={`rounded-xl border ${typeStyle.border} ${typeStyle.bg} p-3 flex flex-col gap-2`}>
       {/* Шапка карточки */}
       <div className="flex items-start justify-between gap-2">
@@ -81,7 +92,7 @@ function OperationCard({ op, onStatusChange }: OperationCardProps) {
             </button>
           )}
           <button
-            onClick={handleReschedule}
+            onClick={() => setRescheduleOpen(true)}
             className="flex-1 text-xs font-medium py-1 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
           >
             Перенести
@@ -89,6 +100,7 @@ function OperationCard({ op, onStatusChange }: OperationCardProps) {
         </div>
       )}
     </div>
+    </>
   );
 }
 
@@ -96,10 +108,11 @@ interface Props {
   day: Date;
   operations: CalendarOperation[];
   onStatusChange: (id: string, status: CalendarStatus) => void;
+  onReschedule: (id: string, date: string, timeStart?: string, timeEnd?: string) => void;
   onClose: () => void;
 }
 
-export default function CalendarDayPanel({ day, operations, onStatusChange, onClose }: Props) {
+export default function CalendarDayPanel({ day, operations, onStatusChange, onReschedule, onClose }: Props) {
   // Разбиваем по слотам — группируем по часу начала
   const slotMap = new Map<number, CalendarOperation[]>();
   const noTime: CalendarOperation[] = [];
@@ -157,7 +170,7 @@ export default function CalendarDayPanel({ day, operations, onStatusChange, onCl
               <span className="text-[11px] font-mono text-gray-400 w-11 shrink-0 pt-3">{hourLabel}</span>
               <div className="flex-1 flex flex-col gap-1.5 pb-1">
                 {ops.map((op) => (
-                  <OperationCard key={op.id} op={op} onStatusChange={onStatusChange} />
+                  <OperationCard key={op.id} op={op} onStatusChange={onStatusChange} onReschedule={onReschedule} />
                 ))}
               </div>
             </div>
@@ -175,7 +188,7 @@ export default function CalendarDayPanel({ day, operations, onStatusChange, onCl
               <div key={op.id} className="flex items-start gap-3">
                 <span className="w-11 shrink-0" />
                 <div className="flex-1">
-                  <OperationCard op={op} onStatusChange={onStatusChange} />
+                  <OperationCard op={op} onStatusChange={onStatusChange} onReschedule={onReschedule} />
                 </div>
               </div>
             ))}

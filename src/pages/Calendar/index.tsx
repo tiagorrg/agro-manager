@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import {
   fetchOperations,
   patchOperationStatus,
+  rescheduleOperation,
   type CalendarOperation,
   type CalendarStatus,
 } from "../../shared/api/operations";
@@ -126,6 +127,21 @@ export default function CalendarPage() {
     );
   }, [filteredOps, selectedDay]);
 
+  const handleReschedule = async (opId: string, date: string, timeStart?: string, timeEnd?: string) => {
+    setOperations((ops) =>
+      ops.map((op) =>
+        op.id === opId
+          ? { ...op, date, timeStart: timeStart ?? op.timeStart, timeEnd: timeEnd ?? op.timeEnd }
+          : op
+      )
+    );
+    try {
+      await rescheduleOperation(opId, date, timeStart, timeEnd);
+    } catch {
+      // silent fail — дипломный проект
+    }
+  };
+
   const handleCreate = (op: CalendarOperation) => {
     setOperations((prev) => [...prev, op]);
     setShowNewTask(false);
@@ -174,6 +190,7 @@ export default function CalendarPage() {
               day={selectedDay}
               operations={dayOps}
               onStatusChange={handleStatusChange}
+              onReschedule={handleReschedule}
               onClose={() => setSelectedDay(null)}
             />
           )}

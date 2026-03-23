@@ -9,7 +9,9 @@ interface LayoutProps {
 export default function Layout({ children, variant = "default" }: LayoutProps) {
   return (
     <div className={`bg-default flex flex-col ${variant === "fullBleed" ? "h-screen overflow-hidden" : "min-h-screen"}`}>
-      <Navbar />
+      <div className="print:hidden">
+        <Navbar />
+      </div>
       {variant === "fullBleed" ? (
         <main className="flex-1 flex flex-col overflow-hidden">
           {children}
