@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useMemo } from "react";
 import { MapContainer, TileLayer, Polygon, Popup } from "react-leaflet";
 import type { Map as LeafletMap } from "leaflet";
 import { useNavigate } from "react-router-dom";
@@ -62,6 +62,15 @@ export default function InteractiveMap({ fields, loading, error }: Props) {
   const selectedFieldId = useMapStore((s) => s.selectedFieldId);
   const selectField = useMapStore((s) => s.selectField);
 
+  // Вычисляем начальный центр из данных полей вместо хардкода
+  const initialCenter = useMemo((): [number, number] => {
+    if (!fields?.length) return [46.26, 39.52];
+    const allPoints = fields.flatMap((f) => f.coordinates.coordinates[0]);
+    const lat = allPoints.reduce((s, [, y]) => s + y, 0) / allPoints.length;
+    const lng = allPoints.reduce((s, [x]) => s + x, 0) / allPoints.length;
+    return [lat, lng];
+  }, [fields]);
+
   // Animate map to selected field
   useEffect(() => {
     if (!selectedFieldId || !fields) return;
@@ -79,7 +88,7 @@ export default function InteractiveMap({ fields, loading, error }: Props) {
       {fields && (
         <MapContainer
           ref={mapRef}
-          center={[46.26, 39.52]}
+          center={initialCenter}
           zoom={13}
           className="h-full w-full"
           zoomControl={true}

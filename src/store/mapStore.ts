@@ -9,16 +9,25 @@ interface MapStore {
   clearSelection: () => void;
 }
 
+// Счётчик для отмены устаревших запросов при быстром переключении полей
+let activeRequestId = 0;
+
 export const useMapStore = create<MapStore>((set) => ({
   selectedFieldId: null,
   selectedDetail: null,
 
   selectField: (field: Field) => {
+    const requestId = ++activeRequestId;
     set({ selectedFieldId: field.id, selectedDetail: null });
     fetchFieldDetail(field.id)
-      .then((detail) => set({ selectedDetail: detail }))
+      .then((detail) => {
+        if (requestId === activeRequestId) set({ selectedDetail: detail });
+      })
       .catch(() => {});
   },
 
-  clearSelection: () => set({ selectedFieldId: null, selectedDetail: null }),
+  clearSelection: () => {
+    ++activeRequestId; // отменяет любой активный запрос
+    set({ selectedFieldId: null, selectedDetail: null });
+  },
 }));

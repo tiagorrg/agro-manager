@@ -57,6 +57,9 @@ export default function MapSidebar({ fields, loading, error }: Props) {
     if (!fields?.length) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+      // Не перехватываем стрелки когда фокус в поле ввода
+      const tag = (document.activeElement as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
       e.preventDefault();
       const currentIndex = fields.findIndex((f) => f.id === selectedFieldId);
       let nextIndex: number;

@@ -1,14 +1,29 @@
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useFetch } from "../../shared/lib/useFetch";
 import { fetchFieldDetail } from "../../shared/api/fields";
 import FieldHeader from "../../components/FieldHeader";
 import FieldMetrics from "../../components/FieldMetrics";
 import OperationsTable from "../../components/OperationsTable";
+import type { FieldDetail } from "../../entities/field/types";
 
 export default function FieldDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: field, loading, error } = useFetch(() => fetchFieldDetail(id!));
+  const [field, setField] = useState<FieldDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    setField(null);
+    fetchFieldDetail(id)
+      .then((data) => { if (!cancelled) { setField(data); setLoading(false); } })
+      .catch((err: Error) => { if (!cancelled) { setError(err.message); setLoading(false); } });
+    return () => { cancelled = true; };
+  }, [id]);
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
