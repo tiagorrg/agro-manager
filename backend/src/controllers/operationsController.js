@@ -3,13 +3,15 @@ const fields = require('../data/fields');
 const crops = require('../data/crops');
 const equipment = require('../data/equipment');
 
+const ALLOWED_STATUSES = ['Запланировано', 'В процессе', 'Выполнено'];
+
 // Обогащаем операцию связанными данными
 function enrich(op) {
   return {
     ...op,
-    field: fields.find(f => f.id === op.fieldId) || null,
-    crop: crops.find(c => c.id === op.cropId) || null,
-    equipment: equipment.find(e => e.id === op.equipmentId) || null,
+    field:     fields.find(f => f.id === op.fieldId)         || null,
+    crop:      crops.find(c => c.id === op.cropId)           || null,
+    equipment: equipment.find(e => e.id === op.equipmentId)  || null,
   };
 }
 
@@ -24,5 +26,18 @@ exports.getAll = (req, res) => {
 exports.getById = (req, res) => {
   const op = operations.find(o => o.id === req.params.id);
   if (!op) return res.status(404).json({ error: 'Операция не найдена' });
+  res.json(enrich(op));
+};
+
+exports.patchStatus = (req, res) => {
+  const op = operations.find(o => o.id === req.params.id);
+  if (!op) return res.status(404).json({ error: 'Операция не найдена' });
+
+  const { calendarStatus } = req.body;
+  if (!ALLOWED_STATUSES.includes(calendarStatus)) {
+    return res.status(400).json({ error: `Допустимые статусы: ${ALLOWED_STATUSES.join(', ')}` });
+  }
+
+  op.calendarStatus = calendarStatus;
   res.json(enrich(op));
 };

@@ -4,5 +4,6 @@ const operationsController = require('../controllers/operationsController');
 
 router.get('/', operationsController.getAll);
 router.get('/:id', operationsController.getById);
+router.patch('/:id/status', operationsController.patchStatus);
 
 module.exports = router;
