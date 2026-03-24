@@ -7,6 +7,7 @@ import {
   type CalendarStatus,
 } from "../../shared/api/operations";
 import type { OperationType } from "../../entities/operation/types";
+import { useAuth } from "../../features/auth";
 import CalendarHeader from "../../components/CalendarHeader";
 import CalendarWeekGrid from "../../components/CalendarWeekGrid";
 import CalendarDayPanel from "../../components/CalendarDayPanel";
@@ -32,6 +33,8 @@ function isSameDay(a: Date, b: Date): boolean {
 }
 
 export default function CalendarPage() {
+  const { user } = useAuth();
+  const canEdit = user?.role === "agronomist";
   const [weekStart, setWeekStart] = useState(() => getWeekStart(new Date()));
   const [selectedDay, setSelectedDay] = useState<Date | null>(() => new Date());
   const [operations, setOperations] = useState<CalendarOperation[]>([]);
@@ -154,7 +157,7 @@ export default function CalendarPage() {
         onToday={goToToday}
         onPrev={goToPrev}
         onNext={goToNext}
-        onNewTask={() => setShowNewTask(true)}
+        onNewTask={canEdit ? () => setShowNewTask(true) : undefined}
       />
 
       {showNewTask && (
@@ -189,6 +192,7 @@ export default function CalendarPage() {
             <CalendarDayPanel
               day={selectedDay}
               operations={dayOps}
+              canEdit={canEdit}
               onStatusChange={handleStatusChange}
               onReschedule={handleReschedule}
               onClose={() => setSelectedDay(null)}

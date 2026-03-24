@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Navbar from "../widgets/navbar";
+import TaskToast from "../widgets/TaskToast";
 
 interface LayoutProps {
   children: ReactNode;
@@ -12,6 +13,7 @@ export default function Layout({ children, variant = "default" }: LayoutProps) {
       <div className="print:hidden">
         <Navbar />
       </div>
+      <TaskToast />
       {variant === "fullBleed" ? (
         <main className="flex-1 flex flex-col overflow-hidden">
           {children}

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 
-export type UserRole = "guest" | "agronomist";
+export type UserRole = "guest" | "agronomist" | "manager";
 
 export interface User {
   login: string;
@@ -15,8 +15,9 @@ interface AuthContextValue {
 }
 
 const USERS: Array<User & { password: string }> = [
-  { login: "guest", password: "guest", role: "guest", name: "Гость" },
-  { login: "agronomist", password: "agronomist", role: "agronomist", name: "Агроном" },
+  { login: "guest",      password: "guest",      role: "guest",      name: "Гость"    },
+  { login: "agronomist", password: "agronomist", role: "agronomist", name: "Агроном"  },
+  { login: "manager",    password: "manager",    role: "manager",    name: "Менеджер" },
 ];
 
 const AuthContext = createContext<AuthContextValue | null>(null);

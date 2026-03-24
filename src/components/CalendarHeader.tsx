@@ -20,7 +20,7 @@ interface Props {
   onToday: () => void;
   onPrev: () => void;
   onNext: () => void;
-  onNewTask: () => void;
+  onNewTask?: () => void;
 }
 
 export default function CalendarHeader({ weekStart, onToday, onPrev, onNext, onNewTask }: Props) {
@@ -56,12 +56,14 @@ export default function CalendarHeader({ weekStart, onToday, onPrev, onNext, onN
         <button className="px-3 h-8 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-md">
           Неделя
         </button>
-        <button
-          onClick={onNewTask}
-          className="px-3 h-8 text-sm font-medium text-white bg-green-primary rounded-md hover:bg-green-700 transition-colors flex items-center gap-1.5"
-        >
-          <span className="text-base leading-none">+</span> Новая задача
-        </button>
+        {onNewTask && (
+          <button
+            onClick={onNewTask}
+            className="px-3 h-8 text-sm font-medium text-white bg-green-primary rounded-md hover:bg-green-700 transition-colors flex items-center gap-1.5"
+          >
+            <span className="text-base leading-none">+</span> Новая задача
+          </button>
+        )}
       </div>
     </div>
   );

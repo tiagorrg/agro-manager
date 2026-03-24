@@ -1,18 +1,44 @@
+import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../features/auth";
+import { fetchOperations } from "../../shared/api/operations";
 import logo from "../../shared/assets/logo.svg";
 
 const NAV_LINKS = [
-  { to: "/dashboard", label: "Дашборд"   },
-  { to: "/map",       label: "Карта"     },
-  { to: "/fields",    label: "Поля"      },
-  { to: "/calendar",  label: "Календарь" },
-  { to: "/reports",   label: "Отчёты"   },
+  { to: "/dashboard",  label: "Дашборд"   },
+  { to: "/map",        label: "Карта"      },
+  { to: "/fields",     label: "Поля"       },
+  { to: "/calendar",   label: "Календарь"  },
+  { to: "/operations", label: "Журнал"     },
+  { to: "/reports",    label: "Отчёты"    },
 ];
+
+const ROLE_LABELS: Record<string, string> = {
+  agronomist: "Агроном",
+  manager:    "Менеджер",
+  guest:      "Гость",
+};
+
+function todayStr(): string {
+  return new Date().toISOString().slice(0, 10);
+}
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [todayCount, setTodayCount] = useState(0);
+
+  useEffect(() => {
+    fetchOperations()
+      .then((ops) => {
+        const today = todayStr();
+        const count = ops.filter(
+          (op) => op.date === today && op.calendarStatus !== "Выполнено"
+        ).length;
+        setTodayCount(count);
+      })
+      .catch(() => {});
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -43,7 +69,7 @@ export default function Navbar() {
                 to={to}
                 className={({ isActive }) =>
                   [
-                    "px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
+                    "px-3 py-1.5 rounded-md text-sm font-medium transition-colors relative",
                     isActive
                       ? "bg-green-primary text-white"
                       : "text-gray-600 hover:bg-gray-100",
@@ -51,6 +77,11 @@ export default function Navbar() {
                 }
               >
                 {label}
+                {to === "/calendar" && todayCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-0.5 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold leading-none">
+                    {todayCount > 9 ? "9+" : todayCount}
+                  </span>
+                )}
               </NavLink>
             </li>
           ))}
@@ -60,7 +91,7 @@ export default function Navbar() {
         <div className="ml-auto flex items-center gap-3">
           <span className="text-sm text-gray-700 font-medium">{user?.name}</span>
           <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
-            {user?.role === "agronomist" ? "Агроном" : "Гость"}
+            {ROLE_LABELS[user?.role ?? "guest"] ?? "Гость"}
           </span>
           <button
             onClick={handleLogout}

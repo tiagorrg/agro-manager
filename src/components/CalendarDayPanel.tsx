@@ -32,11 +32,12 @@ function parseHour(time?: string): number {
 
 interface OperationCardProps {
   op: CalendarOperation;
+  canEdit: boolean;
   onStatusChange: (id: string, status: CalendarStatus) => void;
   onReschedule: (id: string, date: string, timeStart?: string, timeEnd?: string) => void;
 }
 
-function OperationCard({ op, onStatusChange, onReschedule }: OperationCardProps) {
+function OperationCard({ op, canEdit, onStatusChange, onReschedule }: OperationCardProps) {
   const [rescheduleOpen, setRescheduleOpen] = useState(false);
   const typeStyle = TYPE_STYLES[op.type];
   const statusCfg = STATUS_CONFIG[op.calendarStatus];
@@ -73,7 +74,7 @@ function OperationCard({ op, onStatusChange, onReschedule }: OperationCardProps)
       </div>
 
       {/* Кнопки действий */}
-      {op.calendarStatus !== "Выполнено" && (
+      {canEdit && op.calendarStatus !== "Выполнено" && (
         <div className="flex items-center gap-1.5">
           {op.calendarStatus === "Запланировано" && (
             <button
@@ -107,12 +108,13 @@ function OperationCard({ op, onStatusChange, onReschedule }: OperationCardProps)
 interface Props {
   day: Date;
   operations: CalendarOperation[];
+  canEdit: boolean;
   onStatusChange: (id: string, status: CalendarStatus) => void;
   onReschedule: (id: string, date: string, timeStart?: string, timeEnd?: string) => void;
   onClose: () => void;
 }
 
-export default function CalendarDayPanel({ day, operations, onStatusChange, onReschedule, onClose }: Props) {
+export default function CalendarDayPanel({ day, operations, canEdit, onStatusChange, onReschedule, onClose }: Props) {
   // Разбиваем по слотам — группируем по часу начала
   const slotMap = new Map<number, CalendarOperation[]>();
   const noTime: CalendarOperation[] = [];
@@ -170,7 +172,7 @@ export default function CalendarDayPanel({ day, operations, onStatusChange, onRe
               <span className="text-[11px] font-mono text-gray-400 w-11 shrink-0 pt-3">{hourLabel}</span>
               <div className="flex-1 flex flex-col gap-1.5 pb-1">
                 {ops.map((op) => (
-                  <OperationCard key={op.id} op={op} onStatusChange={onStatusChange} onReschedule={onReschedule} />
+                  <OperationCard key={op.id} op={op} canEdit={canEdit} onStatusChange={onStatusChange} onReschedule={onReschedule} />
                 ))}
               </div>
             </div>
@@ -188,7 +190,7 @@ export default function CalendarDayPanel({ day, operations, onStatusChange, onRe
               <div key={op.id} className="flex items-start gap-3">
                 <span className="w-11 shrink-0" />
                 <div className="flex-1">
-                  <OperationCard op={op} onStatusChange={onStatusChange} onReschedule={onReschedule} />
+                  <OperationCard op={op} canEdit={canEdit} onStatusChange={onStatusChange} onReschedule={onReschedule} />
                 </div>
               </div>
             ))}

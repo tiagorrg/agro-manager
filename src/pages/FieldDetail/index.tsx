@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchFieldDetail } from "../../shared/api/fields";
+import { useAuth } from "../../features/auth";
 import FieldHeader from "../../components/FieldHeader";
 import FieldMetrics from "../../components/FieldMetrics";
 import OperationsTable from "../../components/OperationsTable";
@@ -9,6 +10,7 @@ import type { FieldDetail } from "../../entities/field/types";
 import type { Field } from "../../entities/field/types";
 
 export default function FieldDetailPage() {
+  const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [field, setField] = useState<FieldDetail | null>(null);
@@ -66,7 +68,7 @@ export default function FieldDetailPage() {
 
       {field && (
         <>
-          <FieldHeader field={field} onEdit={() => setEditOpen(true)} />
+          <FieldHeader field={field} onEdit={user?.role === "agronomist" ? () => setEditOpen(true) : undefined} />
           <FieldMetrics field={field} />
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
             <h2 className="text-sm font-semibold text-gray-700 mb-3">Операции</h2>
