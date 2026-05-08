@@ -3,6 +3,7 @@ import { fetchDashboard } from "../../shared/api/dashboard";
 import FieldsMiniMap from "../../widgets/dashboard/FieldsMiniMap";
 import WeatherWidget from "../../widgets/dashboard/WeatherWidget";
 import DashboardMetrics from "../../components/DashboardMetrics";
+import RiskRecommendationsCenter from "../../components/RiskRecommendationsCenter";
 
 export default function DashboardPage() {
   const { data, loading, error } = useFetch(fetchDashboard);
@@ -14,9 +15,7 @@ export default function DashboardPage() {
         <h2 className="text-xl font-semibold text-gray-800">Дашборд</h2>
         <FieldsMiniMap />
         <WeatherWidget />
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex items-center justify-center h-52 text-gray-300 text-sm">
-          Последние операции — в разработке
-        </div>
+        <RiskRecommendationsCenter />
       </section>
 
       <aside className="w-64 shrink-0" aria-label="Ключевые показатели">

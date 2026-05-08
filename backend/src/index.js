@@ -6,6 +6,7 @@ const operationsRouter = require('./routes/operations');
 const harvestsRouter   = require('./routes/harvests');
 const dashboardRouter  = require('./routes/dashboard');
 const reportsRouter    = require('./routes/reports');
+const recommendationsRouter = require('./routes/recommendations');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -18,6 +19,7 @@ app.use('/operations', operationsRouter);
 app.use('/harvests',   harvestsRouter);
 app.use('/dashboard',  dashboardRouter);
 app.use('/reports',    reportsRouter);
+app.use('/recommendations', recommendationsRouter);
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
