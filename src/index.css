@@ -20,3 +20,19 @@ code {
 .leaflet-interactive:focus {
   outline: none;
 }
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .print-page {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+}
