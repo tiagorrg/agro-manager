@@ -8,7 +8,7 @@ interface Props {
 
 export default function FieldMetrics({ field }: Props) {
   return (
-    <div className="grid grid-cols-2 gap-4 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
       <MetricCard label="Площадь" value={String(field.area)} unit="га" icon={<IconArea />} />
       <MetricCard label="Культура" value={field.currentCrop.name} unit="текущий сезон" icon={<IconHarvest />} />
       <MetricCard label="Операций" value={String(field.operations.length)} unit="всего" icon={<IconOps />} />

@@ -4,6 +4,13 @@ interface OperationsTableProps {
   operations: Operation[];
 }
 
+const TYPE_LABELS: Record<string, string> = {
+  Посев: "Посев",
+  Обработка: "Обработка",
+  Уборка: "Уборка",
+  ВнесениеУдобрений: "Внесение удобрений",
+};
+
 export default function OperationsTable({ operations }: OperationsTableProps) {
   if (operations.length === 0) {
     return <p className="text-xs text-gray-400">Нет данных</p>;
@@ -16,9 +23,9 @@ export default function OperationsTable({ operations }: OperationsTableProps) {
   return (
     <ul className="divide-y divide-gray-50">
       {sorted.map((op) => (
-        <li key={op.id} className="flex items-center justify-between py-2.5 text-sm">
-          <div>
-            <span className="font-medium text-gray-700">{op.type}</span>
+        <li key={op.id} className="flex items-center justify-between gap-3 py-2.5 text-sm">
+          <div className="min-w-0">
+            <span className="font-medium text-gray-700">{TYPE_LABELS[op.type] ?? op.type}</span>
             {op.description && (
               <span className="text-gray-400 text-xs ml-2">{op.description}</span>
             )}

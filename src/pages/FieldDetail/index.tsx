@@ -6,6 +6,9 @@ import FieldHeader from "../../components/FieldHeader";
 import FieldMetrics from "../../components/FieldMetrics";
 import OperationsTable from "../../components/OperationsTable";
 import FieldEditModal from "../../components/FieldEditModal";
+import FieldYieldChart from "../../components/FieldYieldChart";
+import FieldOperationsTimeline from "../../components/FieldOperationsTimeline";
+import FieldSeasonSummary from "../../components/FieldSeasonSummary";
 import type { FieldDetail } from "../../entities/field/types";
 import type { Field } from "../../entities/field/types";
 
@@ -70,8 +73,21 @@ export default function FieldDetailPage() {
         <>
           <FieldHeader field={field} onEdit={user?.role === "agronomist" ? () => setEditOpen(true) : undefined} />
           <FieldMetrics field={field} />
+          <FieldSeasonSummary field={field} />
+          {/* Аналитика */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+              <h2 className="text-sm font-semibold text-gray-700 mb-4">Урожайность по годам</h2>
+              <FieldYieldChart harvests={field.harvests} />
+            </div>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+              <h2 className="text-sm font-semibold text-gray-700 mb-4">Таймлайн операций</h2>
+              <FieldOperationsTimeline operations={field.operations} />
+            </div>
+          </div>
+
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-            <h2 className="text-sm font-semibold text-gray-700 mb-3">Операции</h2>
+            <h2 className="text-sm font-semibold text-gray-700 mb-3">Все операции</h2>
             <OperationsTable operations={field.operations} />
           </div>
         </>
