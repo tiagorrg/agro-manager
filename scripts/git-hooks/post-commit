@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -eu
+
+required_files="AGENTS.md DOCUMENTATION.md"
+changed_files="$(git diff-tree --no-commit-id --name-only -r HEAD)"
+missing_files=""
+
+for file in $required_files; do
+  if ! printf '%s\n' "$changed_files" | grep -qx "$file"; then
+    missing_files="$missing_files $file"
+  fi
+done
+
+if [ -n "$missing_files" ]; then
+  cat <<EOF
+
+============================================================
+Документация не попала в последний коммит.
+
+После каждого коммита нужно актуализировать:
+$missing_files
+
+Дополни файлы, затем добавь их в текущий коммит:
+
+  git add$missing_files
+  git commit --amend --no-edit
+
+============================================================
+
+EOF
+fi
