@@ -9,6 +9,7 @@ import FieldEditModal from "../../components/FieldEditModal";
 import FieldYieldChart from "../../components/FieldYieldChart";
 import FieldOperationsTimeline from "../../components/FieldOperationsTimeline";
 import FieldSeasonSummary from "../../components/FieldSeasonSummary";
+import FieldSeasonPlan from "../../components/FieldSeasonPlan";
 import type { FieldDetail } from "../../entities/field/types";
 import type { Field } from "../../entities/field/types";
 
@@ -74,6 +75,7 @@ export default function FieldDetailPage() {
           <FieldHeader field={field} onEdit={user?.role === "agronomist" ? () => setEditOpen(true) : undefined} />
           <FieldMetrics field={field} />
           <FieldSeasonSummary field={field} />
+          <FieldSeasonPlan field={field} />
           {/* Аналитика */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
