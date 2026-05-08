@@ -1,8 +1,9 @@
 export interface Harvest {
-  id: number;
-  fieldId: number;
-  year: number;
-  crop: string;
-  yieldPerHa: number;    // ц/га
-  totalYield: number;    // ц
+  id: string;
+  fieldId: string;
+  date: string;               // ISO date (дата уборки)
+  cropId: string;
+  grossHarvest: number;       // ц (валовый сбор)
+  yield: number;              // ц/га (урожайность)
+  grainQuality: string | null;
 }

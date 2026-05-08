@@ -2,12 +2,15 @@ export type OperationType = "Посев" | "Обработка" | "Уборка"
 export type OperationStatus = "План" | "Факт";
 
 export interface Operation {
-  id: number;
-  fieldId: number;
+  id: string;
+  fieldId: string;
   type: OperationType;
   status: OperationStatus;
   date: string;           // ISO date
+  timeStart?: string;
+  timeEnd?: string;
   description?: string;
-  equipmentId?: number;
-  plannedYield?: number;  // ц/га — только для агронома
+  cropId?: string;
+  equipmentId?: string;
+  calendarStatus?: string;
 }
