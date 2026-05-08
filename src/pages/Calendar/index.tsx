@@ -105,14 +105,14 @@ export default function CalendarPage() {
   };
 
   const handleStatusChange = async (opId: string, newStatus: CalendarStatus) => {
-    // Оптимистичное обновление
+    const previousOperations = operations;
     setOperations((ops) =>
       ops.map((op) => (op.id === opId ? { ...op, calendarStatus: newStatus } : op))
     );
     try {
       await patchOperationStatus(opId, newStatus);
     } catch {
-      // При ошибке откатываем (перезапрашиваем оригинальные данные не будем — дипломный проект)
+      setOperations(previousOperations);
     }
   };
 
@@ -131,6 +131,7 @@ export default function CalendarPage() {
   }, [filteredOps, selectedDay]);
 
   const handleReschedule = async (opId: string, date: string, timeStart?: string, timeEnd?: string) => {
+    const previousOperations = operations;
     setOperations((ops) =>
       ops.map((op) =>
         op.id === opId
@@ -141,7 +142,7 @@ export default function CalendarPage() {
     try {
       await rescheduleOperation(opId, date, timeStart, timeEnd);
     } catch {
-      // silent fail — дипломный проект
+      setOperations(previousOperations);
     }
   };
 

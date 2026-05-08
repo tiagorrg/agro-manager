@@ -38,6 +38,9 @@ exports.create = (req, res) => {
   if (!fieldId || !type || !date) {
     return res.status(400).json({ error: 'Необходимы fieldId, type, date' });
   }
+  if (!fields.some(f => f.id === fieldId)) {
+    return res.status(404).json({ error: 'Поле не найдено' });
+  }
   if (!ALLOWED_TYPES.includes(type)) {
     return res.status(400).json({ error: `Допустимые типы: ${ALLOWED_TYPES.join(', ')}` });
   }
