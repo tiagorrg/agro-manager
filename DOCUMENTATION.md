@@ -162,6 +162,8 @@ agro-manager/
         │   └── weatherCodes.ts   # WMO-коды → текст + иконка
         └── ui-kit/
             ├── button/index.tsx
+            ├── checkbox/index.tsx
+            ├── select/index.tsx
             └── input/index.tsx
 ```
 
@@ -606,6 +608,15 @@ formatShortDate(dateStr: string): string // "2026-03-13" → "13 мар"
 **Input** (`input/index.tsx`):
 - `variant: "primary"` — border-gray-300, focus ring-2 зелёный
 - Принимает все стандартные HTMLInputElement props
+
+**Select** (`select/index.tsx`):
+- Кастомный listbox на button/popover вместо нативных `<select>/<option>`
+- Единый стиль: rounded-lg, серый border, зелёный focus/selected state
+- Принимает `value`, `options: { value, label, disabled? }[]`, `onChange`
+
+**Checkbox** (`checkbox/index.tsx`):
+- Визуально кастомный чекбокс с сохранением скрытого нативного `input type="checkbox"` для доступности
+- Использует зелёный checked state и общий focus ring приложения
 
 ---
 

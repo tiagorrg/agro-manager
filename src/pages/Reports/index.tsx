@@ -8,6 +8,7 @@ import {
   type ReportScope,
 } from "../../shared/api/reports";
 import { fetchFields } from "../../shared/api/fields";
+import { Select } from "../../shared/ui-kit/select";
 import type { Field } from "../../entities/field/types";
 
 const TYPE_LABELS: Record<string, string> = {
@@ -225,31 +226,29 @@ export default function ReportsPage() {
         >
           <div className="flex flex-col gap-1">
             <label htmlFor="report-scope" className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Тип отчета</label>
-            <select
+            <Select
               id="report-scope"
               value={draftFilters.scope}
-              onChange={(event) => handleScopeChange(event.target.value as ReportScope)}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500"
-            >
-              <option value="farm">По хозяйству</option>
-              <option value="field">По полю</option>
-            </select>
+              onChange={(value) => handleScopeChange(value as ReportScope)}
+              options={[
+                { value: "farm", label: "По хозяйству" },
+                { value: "field", label: "По полю" },
+              ]}
+            />
           </div>
 
           <div className="flex flex-col gap-1">
             <label htmlFor="report-field" className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Поле</label>
-            <select
+            <Select
               id="report-field"
               value={draftFilters.fieldId ?? ""}
               disabled={draftFilters.scope !== "field" || fieldsLoading}
-              onChange={(event) => setDraftFilters((prev) => ({ ...prev, fieldId: event.target.value }))}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg disabled:bg-gray-50 disabled:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500"
-            >
-              <option value="">Все поля</option>
-              {fields.map((field) => (
-                <option key={field.id} value={field.id}>{field.name}</option>
-              ))}
-            </select>
+              onChange={(value) => setDraftFilters((prev) => ({ ...prev, fieldId: value }))}
+              options={[
+                { value: "", label: "Все поля" },
+                ...fields.map((field) => ({ value: field.id, label: field.name })),
+              ]}
+            />
           </div>
 
           <div className="flex flex-col gap-1">

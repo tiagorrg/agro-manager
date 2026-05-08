@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchFields } from "../shared/api/fields";
 import { createOperation, type CalendarOperation, type CreateOperationInput } from "../shared/api/operations";
+import { Select } from "../shared/ui-kit/select";
 import type { Field } from "../entities/field/types";
 import type { OperationType } from "../entities/operation/types";
 
@@ -72,31 +73,24 @@ export default function NewTaskModal({ defaultDate, onClose, onCreate }: Props) 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Поле</label>
-            <select
+            <Select
               value={fieldId}
-              onChange={(e) => setFieldId(e.target.value)}
-              required
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500"
-            >
-              {fields.map((f) => (
-                <option key={f.id} value={f.id}>
-                  {f.name} ({f.currentCrop.name})
-                </option>
-              ))}
-            </select>
+              onChange={setFieldId}
+              placeholder="Выберите поле"
+              options={fields.map((f) => ({
+                value: f.id,
+                label: `${f.name} (${f.currentCrop.name})`,
+              }))}
+            />
           </div>
 
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Тип операции</label>
-            <select
+            <Select
               value={type}
-              onChange={(e) => setType(e.target.value as OperationType)}
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500"
-            >
-              {OPERATION_TYPES.map((t) => (
-                <option key={t} value={t}>{TYPE_LABELS[t]}</option>
-              ))}
-            </select>
+              onChange={(value) => setType(value as OperationType)}
+              options={OPERATION_TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t] }))}
+            />
           </div>
 
           <div>

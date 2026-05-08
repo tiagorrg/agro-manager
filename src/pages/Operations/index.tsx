@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { fetchOperations, type CalendarOperation, type CalendarStatus } from "../../shared/api/operations";
+import { Select } from "../../shared/ui-kit/select";
 import type { OperationType } from "../../entities/operation/types";
 
 const TYPE_LABELS: Record<OperationType, string> = {
@@ -103,46 +104,45 @@ export default function OperationsPage() {
         {/* Поле */}
         <div className="flex flex-col gap-1 min-w-[160px]">
           <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Поле</label>
-          <select
+          <Select
             value={filterField}
-            onChange={(e) => setFilterField(e.target.value)}
-            className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500"
-          >
-            <option value="">Все поля</option>
-            {fieldOptions.map(([id, name]) => (
-              <option key={id} value={id}>{name}</option>
-            ))}
-          </select>
+            onChange={setFilterField}
+            buttonClassName="min-h-8 py-1.5"
+            options={[
+              { value: "", label: "Все поля" },
+              ...fieldOptions.map(([id, name]) => ({ value: id, label: name })),
+            ]}
+          />
         </div>
 
         {/* Тип */}
         <div className="flex flex-col gap-1 min-w-[160px]">
           <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Тип</label>
-          <select
+          <Select
             value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500"
-          >
-            <option value="">Все типы</option>
-            {(Object.keys(TYPE_LABELS) as OperationType[]).map((t) => (
-              <option key={t} value={t}>{TYPE_LABELS[t]}</option>
-            ))}
-          </select>
+            onChange={setFilterType}
+            buttonClassName="min-h-8 py-1.5"
+            options={[
+              { value: "", label: "Все типы" },
+              ...(Object.keys(TYPE_LABELS) as OperationType[]).map((t) => ({ value: t, label: TYPE_LABELS[t] })),
+            ]}
+          />
         </div>
 
         {/* Статус */}
         <div className="flex flex-col gap-1 min-w-[150px]">
           <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Статус</label>
-          <select
+          <Select
             value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500"
-          >
-            <option value="">Все статусы</option>
-            <option value="Запланировано">Запланировано</option>
-            <option value="В процессе">В процессе</option>
-            <option value="Выполнено">Выполнено</option>
-          </select>
+            onChange={setFilterStatus}
+            buttonClassName="min-h-8 py-1.5"
+            options={[
+              { value: "", label: "Все статусы" },
+              { value: "Запланировано", label: "Запланировано" },
+              { value: "В процессе", label: "В процессе" },
+              { value: "Выполнено", label: "Выполнено" },
+            ]}
+          />
         </div>
 
         {/* Дата от */}

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { fetchFields } from "../shared/api/fields";
 import { fetchWeather } from "../shared/api/weather";
 import { getWeatherInfo, formatWeekday, formatShortDate } from "../shared/lib/weatherCodes";
+import { Checkbox } from "../shared/ui-kit/checkbox";
 import type { DailyForecast } from "../shared/api/weather";
 import type { CalendarOperation } from "../shared/api/operations";
 import type { OperationType } from "../entities/operation/types";
@@ -154,11 +155,9 @@ export default function CalendarSidebar({ operations, activeTypes, onTypeToggle,
               key={type}
               className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-gray-50 cursor-pointer select-none"
             >
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={activeTypes.has(type)}
                 onChange={() => onTypeToggle(type)}
-                className="w-3.5 h-3.5 rounded border-gray-300 text-green-600 focus:ring-green-500 cursor-pointer"
               />
               <span className={`w-2 h-2 rounded-full shrink-0 ${TYPE_DOT[type]}`} />
               <span className="text-sm text-gray-700">{TYPE_LABELS[type]}</span>
