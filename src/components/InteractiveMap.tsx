@@ -92,10 +92,10 @@ export default function InteractiveMap({ fields, loading, error }: Props) {
           zoom={13}
           className="h-full w-full"
           zoomControl={true}
+          attributionControl={false}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           />
           <FitBounds fields={fields} />
           {fields.map((field) => {
