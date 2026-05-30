@@ -41,6 +41,7 @@
 - Отслеживать ключевые метрики хозяйства (площадь, урожай, выполненность работ)
 - Смотреть прогноз погоды на 7 дней для координат полей (Open-Meteo, без ключа)
 - Анализировать распределение культур (donut-диаграмма на чистом SVG)
+- Загружать DOCX-шаблоны документов и автоматически формировать одиночные документы или реестры по операциям
 - Разграничивать доступ: гость (только просмотр) vs агроном (редактирование)
 
 Проект состоит из двух независимых частей:
@@ -232,6 +233,7 @@ BrowserRouter
 | `/login` | `<LoginPage>` | Публичный |
 | `/dashboard` | `<DashboardPage>` | Защищённый |
 | `/map` | `<MapPage>` | Защищённый |
+| `/documents` | `<DocumentsPage>` | Защищённый |
 | `/calendar` | заглушка | Защищённый |
 | `*` | `<Navigate>` | → `/dashboard` или `/login` |
 
@@ -380,6 +382,7 @@ Sticky-шапка (`sticky top-0 z-50 bg-white shadow-sm`).
 |---|---|
 | Дашборд | `/dashboard` |
 | Карта | `/map` |
+| Документы | `/documents` |
 | Календарь | `/calendar` |
 
 ---
@@ -875,6 +878,74 @@ Query-параметры: `fieldId`. Возвращает обогащённые
   ]
 }
 ```
+
+### GET /documents/templates
+Возвращает список загруженных DOCX-шаблонов и справочник типов:
+```jsonc
+{
+  "ok": true,
+  "data": {
+    "templates": [
+      {
+        "id": "tpl1",
+        "name": "Реестр выполненных работ",
+        "type": "registry_document",
+        "supportedModes": ["by_day", "by_period"],
+        "availableTokens": [{ "token": "document_date", "description": "...", "section": "common" }],
+        "detectedTokens": ["document_date", "items_start", "item_field_name", "items_end"],
+        "unknownTokens": [],
+        "validationErrors": [],
+        "isValid": true,
+        "hasItemsBlock": true
+      }
+    ],
+    "templateTypes": ["single_document", "registry_document"],
+    "tokenCatalogByType": {
+      "single_document": [{ "token": "operation_id", "description": "...", "section": "singleOnly" }],
+      "registry_document": [{ "token": "item_field_name", "description": "...", "section": "registryOnly" }]
+    }
+  }
+}
+```
+
+### POST /documents/templates
+Принимает JSON с base64-содержимым DOCX:
+```jsonc
+{
+  "name": "Акт по операции",
+  "type": "single_document",
+  "templateFileName": "akt.docx",
+  "templateContentBase64": "<base64>"
+}
+```
+Сохраняет файл в `uploads/templates`, а метаданные держит в памяти процесса.
+
+### DELETE /documents/templates/:templateId
+Удаляет шаблон и его файл с диска.
+
+### POST /documents/generate
+Генерирует и сразу возвращает готовый `.docx`.
+
+Режимы:
+- `single_document` → `{ templateId, mode: "by_operation", operationId }`
+- `registry_document` → `{ templateId, mode: "by_day", date, fieldId? }`
+- `registry_document` → `{ templateId, mode: "by_period", dateFrom, dateTo, fieldId? }`
+
+Важно:
+- для реестров в первой итерации берутся только операции со статусом `calendarStatus === "Выполнено"`;
+- шаблоны используют квадратные маркеры вида `[document_date]`;
+- повторяемый блок реестра задаётся через `[items_start]...[items_end]`, а при рендере преобразуется в loop-формат `docxtemplater`.
+- UI-шпаргалка по маркерам больше не хардкодится на фронтенде, а строится из backend-каталога `tokenCatalogByType`.
+
+### Готовые шаблоны в репозитории
+
+В папке `docs/document-templates/` лежат стартовые DOCX-шаблоны для КФХ:
+
+- внутренний акт выполнения полевой операции;
+- ежедневный реестр выполненных полевых работ;
+- реестр выполненных работ за период.
+
+Шаблоны можно загрузить прямо в раздел `Документы`. Их исходник генерируется скриптом `scripts/generate_kfh_doc_templates.py`.
 
 ---
 
