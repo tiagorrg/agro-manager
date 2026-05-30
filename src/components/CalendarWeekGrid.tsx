@@ -75,7 +75,7 @@ export default function CalendarWeekGrid({
             <button
               key={i}
               onClick={() => onDayClick(day)}
-              className={`flex flex-col items-center py-3 gap-1 transition-colors ${
+              className={`flex flex-col items-center py-2 gap-1 transition-colors sm:py-3 ${
                 i < 6 ? "border-r border-gray-100" : ""
               } ${isSelected ? "bg-green-50" : "hover:bg-gray-50"}`}
             >
@@ -83,7 +83,7 @@ export default function CalendarWeekGrid({
                 {DAY_NAMES[i]}
               </span>
               <span
-                className={`w-7 h-7 flex items-center justify-center rounded-full text-sm font-semibold transition-colors ${
+                className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-semibold transition-colors sm:w-7 sm:h-7 sm:text-sm ${
                   isToday
                     ? "bg-green-primary text-white"
                     : isSelected
@@ -99,7 +99,7 @@ export default function CalendarWeekGrid({
       </div>
 
       {/* Тело: карточки операций */}
-      <div className="grid grid-cols-7 min-h-[320px]">
+      <div className="grid grid-cols-7 min-h-[220px] sm:min-h-[320px]">
         {days.map((day, i) => {
           const isToday = isSameDay(day, today);
           const isSelected = selectedDay ? isSameDay(day, selectedDay) : false;
@@ -111,7 +111,7 @@ export default function CalendarWeekGrid({
             <div
               key={i}
               onClick={() => onDayClick(day)}
-              className={`p-2 flex flex-col gap-1.5 cursor-pointer transition-colors ${
+              className={`p-1 flex flex-col gap-1 cursor-pointer transition-colors sm:p-2 sm:gap-1.5 ${
                 i < 6 ? "border-r border-gray-100" : ""
               } ${isSelected ? "bg-green-50/60" : isToday ? "bg-green-50/40" : "hover:bg-gray-50/60"}`}
             >
@@ -121,7 +121,7 @@ export default function CalendarWeekGrid({
                 return (
                   <div
                     key={op.id}
-                    className={`${style.bg} ${style.text} rounded-md px-2 py-1.5 text-xs select-none`}
+                    className={`${style.bg} ${style.text} rounded-md px-1 py-1 text-[10px] select-none sm:px-2 sm:py-1.5 sm:text-xs`}
                   >
                     <div className="flex items-center gap-1.5">
                       <span className={`w-2 h-2 rounded-full shrink-0 ${statusDot}`} />

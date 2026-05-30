@@ -25,8 +25,8 @@ interface Props {
 
 export default function CalendarHeader({ weekStart, onToday, onPrev, onNext, onNewTask }: Props) {
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-wrap items-center gap-2">
         <button
           onClick={onPrev}
           className="w-8 h-8 flex items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 transition-colors"
@@ -52,14 +52,14 @@ export default function CalendarHeader({ weekStart, onToday, onPrev, onNext, onN
         </span>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 sm:justify-end">
         <button className="px-3 h-8 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-md">
           Неделя
         </button>
         {onNewTask && (
           <button
             onClick={onNewTask}
-            className="px-3 h-8 text-sm font-medium text-white bg-green-primary rounded-md hover:bg-green-700 transition-colors flex items-center gap-1.5"
+            className="flex-1 sm:flex-none px-3 h-8 text-sm font-medium text-white bg-green-primary rounded-md hover:bg-green-700 transition-colors flex items-center justify-center gap-1.5"
           >
             <span className="text-base leading-none">+</span> Новая задача
           </button>

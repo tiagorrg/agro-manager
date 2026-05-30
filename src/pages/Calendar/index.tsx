@@ -169,7 +169,7 @@ export default function CalendarPage() {
         />
       )}
 
-      <div className="flex gap-5 items-start">
+      <div className="flex flex-col gap-4 lg:flex-row lg:gap-5 lg:items-start">
         {/* Левая боковая панель */}
         <CalendarSidebar
           operations={filteredOps}
@@ -179,7 +179,7 @@ export default function CalendarPage() {
         />
 
         {/* Основное содержимое */}
-        <div className="flex-1 flex flex-col gap-4 min-w-0">
+        <div className="flex-1 flex flex-col gap-4 min-w-0 lg:order-none order-first">
           <CalendarWeekGrid
             weekStart={weekStart}
             operations={filteredOps}

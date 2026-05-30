@@ -84,7 +84,7 @@ export default function InteractiveMap({ fields, loading, error }: Props) {
   }, [selectedFieldId, fields]);
 
   return (
-    <div className="flex-1 relative">
+    <div className="flex-1 min-h-0 relative">
       {fields && (
         <MapContainer
           ref={mapRef}

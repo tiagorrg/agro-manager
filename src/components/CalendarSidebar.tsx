@@ -75,7 +75,7 @@ function WeatherSection(_: WeatherSectionProps) {
   if (!forecast.length) return null;
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:flex lg:flex-col">
       {forecast.map((day) => {
         const info = getWeatherInfo(day.weatherCode);
         return (
@@ -135,7 +135,7 @@ export default function CalendarSidebar({ operations, activeTypes, onTypeToggle,
     .slice(0, 6);
 
   return (
-    <aside className="w-60 shrink-0 flex flex-col gap-5">
+    <aside className="w-full shrink-0 flex flex-col gap-4 lg:w-60 lg:gap-5">
       {/* Погода */}
       <section>
         <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
@@ -149,7 +149,7 @@ export default function CalendarSidebar({ operations, activeTypes, onTypeToggle,
         <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
           Тип операции
         </h4>
-        <div className="flex flex-col gap-1">
+        <div className="grid grid-cols-2 gap-1 sm:flex sm:flex-col">
           {ALL_TYPES.map((type) => (
             <label
               key={type}
@@ -174,7 +174,7 @@ export default function CalendarSidebar({ operations, activeTypes, onTypeToggle,
         {upcoming.length === 0 ? (
           <p className="text-xs text-gray-400 px-1">Нет предстоящих задач</p>
         ) : (
-          <div className="flex flex-col gap-1.5">
+          <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:flex lg:flex-col">
             {upcoming.map((op) => {
               const d = new Date(op.date + "T00:00:00");
               const dot = TYPE_DOT[op.type];

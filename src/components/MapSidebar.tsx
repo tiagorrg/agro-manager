@@ -78,8 +78,8 @@ export default function MapSidebar({ fields, loading, error }: Props) {
   }, [fields, selectedFieldId, selectField]);
 
   return (
-    <aside className="w-72 shrink-0 bg-white border-r border-gray-100 flex flex-col overflow-hidden">
-      <div className="px-4 py-4 border-b border-gray-100">
+    <aside className="w-full max-h-[38vh] shrink-0 bg-white border-t border-gray-100 flex flex-col overflow-hidden md:w-72 md:max-h-none md:border-t-0 md:border-r">
+      <div className="px-4 py-3 md:py-4 border-b border-gray-100">
         <h2 className="text-sm font-semibold text-gray-800">Поля хозяйства</h2>
         {fields && (
           <p className="text-xs text-gray-400 mt-0.5">
@@ -87,7 +87,7 @@ export default function MapSidebar({ fields, loading, error }: Props) {
           </p>
         )}
         {fields && (
-          <p className="text-[10px] text-gray-300 mt-1.5 flex items-center gap-1">
+          <p className="hidden text-[10px] text-gray-300 mt-1.5 md:flex items-center gap-1">
             <kbd className="inline-flex items-center justify-center w-4 h-4 rounded border border-gray-200 text-[9px] font-mono text-gray-400 bg-gray-50">↑</kbd>
             <kbd className="inline-flex items-center justify-center w-4 h-4 rounded border border-gray-200 text-[9px] font-mono text-gray-400 bg-gray-50">↓</kbd>
             переключение между полями
@@ -119,7 +119,7 @@ export default function MapSidebar({ fields, loading, error }: Props) {
       </div>
 
       {fields && (
-        <div className="px-4 py-3 border-t border-gray-100">
+        <div className="hidden px-4 py-3 border-t border-gray-100 md:block">
           <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wide mb-2">
             Культуры
           </p>

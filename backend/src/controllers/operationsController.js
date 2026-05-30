@@ -6,7 +6,10 @@ const equipment = require('../data/equipment');
 const ALLOWED_STATUSES = ['Запланировано', 'В процессе', 'Выполнено'];
 const ALLOWED_TYPES = ['Посев', 'Обработка', 'Уборка', 'ВнесениеУдобрений'];
 
-let opCounter = 30;
+let opCounter = operations.reduce((max, op) => {
+  const numericId = Number(String(op.id).replace('op', ''));
+  return Number.isFinite(numericId) ? Math.max(max, numericId) : max;
+}, 0);
 
 // Обогащаем операцию связанными данными
 function enrich(op) {

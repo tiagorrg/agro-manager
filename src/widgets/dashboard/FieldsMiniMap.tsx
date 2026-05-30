@@ -20,7 +20,11 @@ function MapLegend() {
   );
 }
 
-export default function FieldsMiniMap() {
+interface FieldsMiniMapProps {
+  showAction?: boolean;
+}
+
+export default function FieldsMiniMap({ showAction = true }: FieldsMiniMapProps) {
   const { data: fields, loading, error } = useFetch(fetchFields);
   const navigate = useNavigate();
 
@@ -28,12 +32,14 @@ export default function FieldsMiniMap() {
     <section className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
       <div className="px-5 pt-5 pb-3 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-gray-700">Поля хозяйства</h3>
-        <button
-          onClick={() => navigate("/map")}
-          className="text-xs text-green-primary font-medium hover:underline"
-        >
-          Открыть детальную карту →
-        </button>
+        {showAction && (
+          <button
+            onClick={() => navigate("/map")}
+            className="text-xs text-green-primary font-medium hover:underline"
+          >
+            Открыть детальную карту →
+          </button>
+        )}
       </div>
 
       {/* Карта */}

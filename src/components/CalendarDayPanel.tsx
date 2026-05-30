@@ -56,7 +56,7 @@ function OperationCard({ op, canEdit, onStatusChange, onReschedule }: OperationC
     )}
     <div className={`rounded-xl border ${typeStyle.border} ${typeStyle.bg} p-3 flex flex-col gap-2`}>
       {/* Шапка карточки */}
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-col gap-0.5 min-w-0">
           {op.timeStart && op.timeEnd && (
             <span className="text-xs font-mono text-gray-500">
@@ -68,14 +68,14 @@ function OperationCard({ op, canEdit, onStatusChange, onReschedule }: OperationC
             <span className="text-xs text-gray-500 truncate">{op.field.name} · {op.field.area} га</span>
           )}
         </div>
-        <span className={`shrink-0 text-[11px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${statusCfg.badge}`}>
+        <span className={`shrink-0 self-start text-[11px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${statusCfg.badge}`}>
           {statusCfg.icon} {statusCfg.label}
         </span>
       </div>
 
       {/* Кнопки действий */}
       {canEdit && op.calendarStatus !== "Выполнено" && (
-        <div className="flex items-center gap-1.5">
+        <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center">
           {op.calendarStatus === "Запланировано" && (
             <button
               onClick={() => onStatusChange(op.id, "В процессе")}
@@ -148,7 +148,7 @@ export default function CalendarDayPanel({ day, operations, canEdit, onStatusCha
         </button>
       </div>
 
-      <div className="p-3 flex flex-col gap-1 max-h-[420px] overflow-y-auto">
+      <div className="p-3 flex flex-col gap-1 max-h-[360px] overflow-y-auto sm:max-h-[420px]">
         {!hasOps && (
           <p className="text-center text-sm text-gray-400 py-8">
             Задач на этот день нет
