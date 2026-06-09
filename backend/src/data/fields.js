@@ -58,7 +58,7 @@ const fields = [
         [39.512150520329214, 46.263525741987706],
       ]],
     },
-    currentCrop: { id: 'crp3', name: 'Кукуруза' },
+    currentCrop: { id: 'crp1', name: 'Пшеница озимая' },
   },
   {
     id: 'field4',
@@ -118,7 +118,7 @@ const fields = [
         [39.492972046129466, 46.267933393432116],
       ]],
     },
-    currentCrop: { id: 'crp3', name: 'Кукуруза' },
+    currentCrop: { id: 'crp2', name: 'Подсолнечник' },
   },
   {
     id: 'field7',
@@ -179,7 +179,7 @@ const fields = [
         [39.4986075,         46.2731377],
       ]],
     },
-    currentCrop: { id: 'crp3', name: 'Кукуруза' },
+    currentCrop: { id: 'crp1', name: 'Пшеница озимая' },
   },
   {
     id: 'field10',

@@ -36,9 +36,9 @@ function HBar({ label, value, max, color }: { label: string; value: number; max:
   return (
     <div className="flex items-center gap-3">
       <span className="w-40 text-xs text-gray-600 shrink-0 truncate">{label}</span>
-      <div className="flex-1 h-5 bg-gray-100 rounded-full overflow-hidden">
+      <div className="report-chart-track flex-1 h-5 bg-gray-100 rounded-full overflow-hidden">
         <div
-          className={`h-full rounded-full transition-all ${color}`}
+          className={`report-chart-fill h-full rounded-full transition-all ${color}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -67,9 +67,9 @@ function VBars({ data }: { data: Record<string, number> }) {
         return (
           <div key={key} className="flex-1 flex flex-col items-center gap-1 min-w-0">
             <span className="text-xs font-semibold text-gray-700">{val.toFixed(0)}</span>
-            <div className="w-full bg-gray-100 rounded-t-md relative" style={{ height: "80px" }}>
+            <div className="report-chart-track w-full bg-gray-100 rounded-t-md relative" style={{ height: "80px" }}>
               <div
-                className="w-full bg-green-500 rounded-t-md transition-all absolute bottom-0"
+                className="report-chart-fill w-full bg-green-500 rounded-t-md transition-all absolute bottom-0"
                 style={{ height: `${pct}%` }}
               />
             </div>
@@ -97,9 +97,9 @@ function FieldTable({ rows }: { rows: FieldStat[] }) {
                 <span className="text-xs font-medium text-gray-700 truncate">{field.name}</span>
                 <span className="text-xs text-gray-400 shrink-0 ml-2">{field.completed}/{field.total}</span>
               </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div className="report-chart-track h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-green-500 rounded-full transition-all"
+                  className="report-chart-fill h-full bg-green-500 rounded-full transition-all"
                   style={{ width: `${pct}%` }}
                 />
               </div>
