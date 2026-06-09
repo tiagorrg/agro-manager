@@ -2,6 +2,7 @@ const operations = require('../../data/operations');
 const fields = require('../../data/fields');
 const crops = require('../../data/crops');
 const equipment = require('../../data/equipment');
+const enterprise = require('../../data/enterprise');
 const { createHttpError } = require('../../utils/httpError');
 const { GENERATION_MODES, TEMPLATE_TYPES } = require('./templateDictionary');
 
@@ -53,6 +54,22 @@ function buildFieldHeader(field) {
   };
 }
 
+function buildEnterprisePayload() {
+  return {
+    enterprise_name: normalizeString(enterprise.name),
+    enterprise_short_name: normalizeString(enterprise.shortName),
+    enterprise_inn: normalizeString(enterprise.inn),
+    enterprise_kpp: normalizeString(enterprise.kpp),
+    enterprise_ogrn: normalizeString(enterprise.ogrn),
+    enterprise_address: normalizeString(enterprise.address),
+    enterprise_phone: normalizeString(enterprise.phone),
+    manager_position: normalizeString(enterprise.manager && enterprise.manager.position),
+    manager_name: normalizeString(enterprise.manager && enterprise.manager.name),
+    agronomist_position: normalizeString(enterprise.agronomist && enterprise.agronomist.position),
+    agronomist_name: normalizeString(enterprise.agronomist && enterprise.agronomist.name),
+  };
+}
+
 function buildSingleDocumentPayload({ templateName, operation }) {
   const now = new Date();
   const field = operation.field;
@@ -78,6 +95,7 @@ function buildSingleDocumentPayload({ templateName, operation }) {
     equipment_type: normalizeString(operation.equipment && operation.equipment.type),
     equipment_model: normalizeString(operation.equipment && operation.equipment.model),
     equipment_reg_number: normalizeString(operation.equipment && operation.equipment.regNumber),
+    ...buildEnterprisePayload(),
     ...buildFieldHeader(field),
   };
 }
@@ -105,6 +123,7 @@ function buildRegistryDocumentPayload({
     period_start: normalizeString(periodStart),
     period_end: normalizeString(periodEnd),
     operations_count: String(items.length),
+    ...buildEnterprisePayload(),
     ...headerField,
     items: items.map((operation, index) => ({
       item_index: String(index + 1),

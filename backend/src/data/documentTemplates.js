@@ -1,3 +1,52 @@
-const documentTemplates = [];
+const path = require('path');
+
+const documentTemplates = [
+  {
+    id: 'tpl100',
+    name: 'Акт выполненных полевых работ',
+    type: 'registry_document',
+    templateFileName: 'tpl100-akt-vypolnennykh-polevykh-rabot.docx',
+    originalFileName: 'akt-vypolnennykh-polevykh-rabot.docx',
+    filePath: path.join(__dirname, '..', '..', 'uploads', 'templates', 'tpl100-akt-vypolnennykh-polevykh-rabot.docx'),
+    detectedTokens: [
+      'template_name',
+      'document_date',
+      'enterprise_name',
+      'enterprise_inn',
+      'enterprise_kpp',
+      'enterprise_ogrn',
+      'enterprise_address',
+      'enterprise_phone',
+      'period_start',
+      'period_end',
+      'field_name',
+      'field_area',
+      'field_cadastral_number',
+      'operations_count',
+      'items_start',
+      'item_index',
+      'item_operation_date',
+      'item_field_name',
+      'item_field_area',
+      'item_crop_name',
+      'item_operation_type',
+      'item_equipment_name',
+      'item_equipment_model',
+      'item_equipment_reg_number',
+      'items_end',
+      'manager_position',
+      'manager_name',
+      'agronomist_position',
+      'agronomist_name',
+      'generated_at',
+    ],
+    unknownTokens: [],
+    validationErrors: [],
+    isValid: true,
+    hasItemsBlock: true,
+    createdAt: '2026-06-09T09:00:00.000Z',
+    updatedAt: '2026-06-09T09:00:00.000Z',
+  },
+];
 
 module.exports = documentTemplates;
