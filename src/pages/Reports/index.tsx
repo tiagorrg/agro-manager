@@ -130,6 +130,16 @@ function buildDefaultFilters(): ReportFilters {
   return { scope: "farm", fieldId: "", dateFrom: "", dateTo: "" };
 }
 
+function isIOSDevice(): boolean {
+  if (typeof navigator === "undefined") return false;
+
+  const platform = navigator.platform.toLowerCase();
+  const agent = navigator.userAgent.toLowerCase();
+  const isTouchMac = platform === "macintel" && navigator.maxTouchPoints > 1;
+
+  return /iphone|ipad|ipod/.test(agent) || isTouchMac;
+}
+
 export default function ReportsPage() {
   const [fields, setFields] = useState<Field[]>([]);
   const [data, setData] = useState<ReportsData | null>(null);
@@ -138,6 +148,7 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(true);
   const [fieldsLoading, setFieldsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [printHint, setPrintHint] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -201,6 +212,33 @@ export default function ReportsPage() {
   const maxType = Math.max(...Object.values(data?.byType ?? {}), 1);
   const statusTotal = Object.values(data?.byStatus ?? {}).reduce((sum, value) => sum + value, 0);
   const generatedAt = new Date().toLocaleDateString("ru");
+  const isIOS = isIOSDevice();
+
+  const handlePrint = async () => {
+    setPrintHint(null);
+
+    if (isIOS) {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: reportTitle,
+            text: "Откройте меню «Поделиться» и выберите «Печать».",
+            url: window.location.href,
+          });
+          return;
+        } catch (error) {
+          if (error instanceof DOMException && error.name === "AbortError") {
+            return;
+          }
+        }
+      }
+
+      setPrintHint("На iPhone откройте меню браузера «Поделиться» и выберите «Печать».");
+      return;
+    }
+
+    window.print();
+  };
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4 flex flex-col gap-6 print-page">
@@ -213,12 +251,19 @@ export default function ReportsPage() {
             </p>
           </div>
           <button
-            onClick={() => window.print()}
+            type="button"
+            onClick={() => void handlePrint()}
             className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            Печать
+            {isIOS ? "Поделиться / печать" : "Печать"}
           </button>
         </div>
+
+        {printHint && (
+          <div className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+            {printHint}
+          </div>
+        )}
 
         <form
           onSubmit={handleSubmit}
