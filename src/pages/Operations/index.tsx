@@ -100,9 +100,9 @@ export default function OperationsPage() {
       </div>
 
       {/* Фильтры */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-wrap gap-3 items-end">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-end">
         {/* Поле */}
-        <div className="flex flex-col gap-1 min-w-[160px]">
+        <div className="flex min-w-0 flex-col gap-1 lg:min-w-[160px]">
           <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Поле</label>
           <Select
             value={filterField}
@@ -116,7 +116,7 @@ export default function OperationsPage() {
         </div>
 
         {/* Тип */}
-        <div className="flex flex-col gap-1 min-w-[160px]">
+        <div className="flex min-w-0 flex-col gap-1 lg:min-w-[160px]">
           <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Тип</label>
           <Select
             value={filterType}
@@ -130,7 +130,7 @@ export default function OperationsPage() {
         </div>
 
         {/* Статус */}
-        <div className="flex flex-col gap-1 min-w-[150px]">
+        <div className="flex min-w-0 flex-col gap-1 lg:min-w-[150px]">
           <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Статус</label>
           <Select
             value={filterStatus}
@@ -146,32 +146,32 @@ export default function OperationsPage() {
         </div>
 
         {/* Дата от */}
-        <div className="flex flex-col gap-1">
+        <div className="flex min-w-0 flex-col gap-1">
           <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">С</label>
           <input
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500"
+            className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500"
           />
         </div>
 
         {/* Дата до */}
-        <div className="flex flex-col gap-1">
+        <div className="flex min-w-0 flex-col gap-1">
           <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">По</label>
           <input
             type="date"
             value={dateTo}
             max={localDate(new Date())}
             onChange={(e) => setDateTo(e.target.value)}
-            className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500"
+            className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500"
           />
         </div>
 
         {hasFilters && (
           <button
             onClick={clearFilters}
-            className="px-3 py-1.5 text-sm text-gray-400 hover:text-gray-600 transition-colors self-end"
+            className="px-3 py-1.5 text-sm text-gray-400 hover:text-gray-600 transition-colors sm:self-end lg:self-end"
           >
             Сбросить
           </button>
@@ -201,46 +201,76 @@ export default function OperationsPage() {
               Операций не найдено
             </div>
           ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100">
-                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Дата</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Поле</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Тип</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Статус</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Время</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((op, i) => (
-                  <tr
-                    key={op.id}
-                    className={`border-b border-gray-50 hover:bg-gray-50 transition-colors ${i === filtered.length - 1 ? "border-b-0" : ""}`}
-                  >
-                    <td className="px-4 py-3 text-gray-700 font-medium whitespace-nowrap">
-                      {formatDate(op.date)}
-                    </td>
-                    <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
-                      {op.field?.name ?? op.fieldId}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="flex items-center gap-1.5">
-                        <span className={`w-2 h-2 rounded-full shrink-0 ${TYPE_DOT[op.type] ?? "bg-gray-400"}`} />
-                        {TYPE_LABELS[op.type] ?? op.type}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_BADGE[op.calendarStatus] ?? "bg-gray-100 text-gray-500"}`}>
+            <>
+              <div className="divide-y divide-gray-100 sm:hidden">
+                {filtered.map((op) => (
+                  <article key={op.id} className="px-4 py-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-gray-800">
+                          {op.field?.name ?? op.fieldId}
+                        </p>
+                        <p className="mt-0.5 text-xs text-gray-400">{formatDate(op.date)}</p>
+                      </div>
+                      <span className={`shrink-0 text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_BADGE[op.calendarStatus] ?? "bg-gray-100 text-gray-500"}`}>
                         {op.calendarStatus}
                       </span>
-                    </td>
-                    <td className="px-4 py-3 text-gray-400 font-mono text-xs whitespace-nowrap">
-                      {op.timeStart && op.timeEnd ? `${op.timeStart} – ${op.timeEnd}` : "—"}
-                    </td>
-                  </tr>
+                    </div>
+
+                    <div className="mt-3 flex items-center justify-between gap-3">
+                      <span className="flex min-w-0 items-center gap-1.5 text-sm text-gray-700">
+                        <span className={`w-2 h-2 rounded-full shrink-0 ${TYPE_DOT[op.type] ?? "bg-gray-400"}`} />
+                        <span className="truncate">{TYPE_LABELS[op.type] ?? op.type}</span>
+                      </span>
+                      <span className="shrink-0 font-mono text-xs text-gray-400">
+                        {op.timeStart && op.timeEnd ? `${op.timeStart} – ${op.timeEnd}` : "—"}
+                      </span>
+                    </div>
+                  </article>
                 ))}
-              </tbody>
-            </table>
+              </div>
+
+              <table className="hidden w-full text-sm sm:table">
+                <thead>
+                  <tr className="border-b border-gray-100">
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Дата</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Поле</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Тип</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Статус</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Время</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((op, i) => (
+                    <tr
+                      key={op.id}
+                      className={`border-b border-gray-50 hover:bg-gray-50 transition-colors ${i === filtered.length - 1 ? "border-b-0" : ""}`}
+                    >
+                      <td className="px-4 py-3 text-gray-700 font-medium whitespace-nowrap">
+                        {formatDate(op.date)}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
+                        {op.field?.name ?? op.fieldId}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <span className="flex items-center gap-1.5">
+                          <span className={`w-2 h-2 rounded-full shrink-0 ${TYPE_DOT[op.type] ?? "bg-gray-400"}`} />
+                          {TYPE_LABELS[op.type] ?? op.type}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_BADGE[op.calendarStatus] ?? "bg-gray-100 text-gray-500"}`}>
+                          {op.calendarStatus}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-400 font-mono text-xs whitespace-nowrap">
+                        {op.timeStart && op.timeEnd ? `${op.timeStart} – ${op.timeEnd}` : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
         </div>
       )}

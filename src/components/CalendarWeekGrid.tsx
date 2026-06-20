@@ -66,8 +66,87 @@ export default function CalendarWeekGrid({
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      {/* Мобильный список дней */}
+      <div className="divide-y divide-gray-100 sm:hidden">
+        {days.map((day, i) => {
+          const isToday = isSameDay(day, today);
+          const isSelected = selectedDay ? isSameDay(day, selectedDay) : false;
+          const dayOps = operations.filter((op) =>
+            isSameDay(new Date(op.date + "T00:00:00"), day)
+          );
+
+          return (
+            <button
+              key={i}
+              type="button"
+              onClick={() => onDayClick(day)}
+              className={`w-full px-3 py-3 text-left transition-colors ${
+                isSelected ? "bg-green-50" : isToday ? "bg-green-50/40" : "hover:bg-gray-50"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold ${
+                      isToday
+                        ? "bg-green-primary text-white"
+                        : isSelected
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    {day.getDate()}
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-700">{DAY_NAMES[i]}</p>
+                    <p className="text-xs text-gray-400">
+                      {day.toLocaleDateString("ru", { day: "numeric", month: "long" })}
+                    </p>
+                  </div>
+                </div>
+                <span className="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
+                  {dayOps.length}
+                </span>
+              </div>
+
+              {dayOps.length > 0 ? (
+                <div className="mt-3 flex flex-col gap-2">
+                  {dayOps.map((op) => {
+                    const style = TYPE_STYLES[op.type];
+                    const statusDot = STATUS_DOT[op.calendarStatus];
+                    return (
+                      <div
+                        key={op.id}
+                        className={`${style.bg} ${style.text} rounded-lg px-3 py-2`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${statusDot}`} />
+                          <span className="min-w-0 flex-1 truncate text-sm font-semibold">
+                            {op.type}
+                          </span>
+                          <span className="font-mono text-xs opacity-60">
+                            {op.timeStart ?? "—"}
+                          </span>
+                        </div>
+                        {op.field && (
+                          <p className="mt-1 truncate pl-5 text-xs opacity-75">
+                            {op.field.name}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="mt-2 pl-10 text-xs text-gray-300">Нет операций</p>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Шапка: кликабельные заголовки колонок */}
-      <div className="grid grid-cols-7 border-b border-gray-100">
+      <div className="hidden grid-cols-7 border-b border-gray-100 sm:grid">
         {days.map((day, i) => {
           const isToday = isSameDay(day, today);
           const isSelected = selectedDay ? isSameDay(day, selectedDay) : false;
@@ -99,7 +178,7 @@ export default function CalendarWeekGrid({
       </div>
 
       {/* Тело: карточки операций */}
-      <div className="grid grid-cols-7 min-h-[220px] sm:min-h-[320px]">
+      <div className="hidden min-h-[320px] grid-cols-7 sm:grid">
         {days.map((day, i) => {
           const isToday = isSameDay(day, today);
           const isSelected = selectedDay ? isSameDay(day, selectedDay) : false;
