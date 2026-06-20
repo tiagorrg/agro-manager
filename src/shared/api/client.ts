@@ -1,6 +1,11 @@
-import { API_URL } from "../config";
+import { API_URL, IS_DEMO_MODE } from "../config";
+import { demoRequest } from "../demo/api";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  if (IS_DEMO_MODE) {
+    return demoRequest<T>(path, options);
+  }
+
   const res = await fetch(`${API_URL}${path}`, {
     headers: { "Content-Type": "application/json" },
     ...options,

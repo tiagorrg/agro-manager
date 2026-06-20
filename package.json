@@ -2,6 +2,7 @@
   "name": "agro-manager",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://tiagorrg.github.io/agro-manager",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -23,6 +24,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:pages": "REACT_APP_DEMO=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "type-check": "tsc --noEmit"

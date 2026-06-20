@@ -11,6 +11,12 @@
 
 # production
 /build
+/.npm-cache
+/.playwright-browsers
+/.tmp
+/outputs/*/
+!/outputs/final-agroscope-defense/
+!/outputs/final-agroscope-defense/**
 
 # misc
 .DS_Store

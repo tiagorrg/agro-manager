@@ -48,6 +48,13 @@
 - `agro-manager/` — React-приложение (фронтенд)
 - `agro-manager/backend/` — Express.js REST API (бэкенд)
 
+Для защиты диплома добавлен статический demo-режим. При сборке с
+`REACT_APP_DEMO=true` frontend не обращается к `localhost:3001`, а использует
+локальный слой `src/shared/demo/`: поля, операции, отчеты, dashboard и
+рекомендации формируются в браузере, а изменяемые данные сохраняются в
+`localStorage`. Это позволяет разместить рабочую демонстрационную версию на
+GitHub Pages без БД и отдельного Node.js-хостинга.
+
 ---
 
 ## 2. Технологический стек
@@ -78,6 +85,7 @@
 - **PostCSS + autoprefixer** — обработка CSS
 - **ESLint** — линтинг
 - **sessionStorage** — хранение сессии пользователя
+- **GitHub Pages** — публичный статический demo-деплой без отдельного backend
 - **Git hook `post-commit`** — напоминание об обновлении `AGENTS.md` и `DOCUMENTATION.md` после каждого коммита
 
 ---
@@ -219,10 +227,14 @@ const { user, login, logout } = useAuth();
 
 Корневой компонент. Структура:
 ```
-BrowserRouter
+BrowserRouter или HashRouter в demo-сборке
   └── Providers (AuthProvider)
         └── Router (Routes)
 ```
+
+В обычном режиме используется `BrowserRouter`. В demo-сборке для GitHub Pages
+используется `HashRouter`, чтобы маршруты не ломались при обновлении страницы
+на статическом хостинге.
 
 #### `src/app/router.jsx`
 
@@ -496,6 +508,20 @@ apiClient.delete<T>(path): Promise<T>
 
 Базовый URL берётся из `shared/config/index.ts` → `API_URL`.
 При статусе не-2xx выбрасывает `Error` с текстом ответа.
+
+В demo-режиме (`REACT_APP_DEMO=true`) клиент не выполняет HTTP-запросы к
+Express API. Вместо этого `shared/api/client.ts` передает JSON-запросы в
+`src/shared/demo/api.ts`, который повторяет контракты `/fields`, `/operations`,
+`/dashboard`, `/reports` и `/recommendations`. Создание операций, перенос задач,
+смена статуса и редактирование полей сохраняются в `localStorage`.
+
+Погода в demo-режиме также формируется локально в `shared/api/weather.ts`, чтобы
+публичная защита не зависела от доступности внешнего Open-Meteo API.
+
+Для `/documents` используется отдельный demo-сервис
+`src/shared/demo/documents.ts`: DOCX-шаблоны валидируются и сохраняются в
+`localStorage`, а генерация выполняется в браузере через `docxtemplater` и
+`pizzip`.
 
 ---
 
@@ -998,6 +1024,21 @@ cd agro-manager
 npm start
 # Откроется http://localhost:3000
 ```
+
+### Demo-сборка для GitHub Pages
+
+```bash
+cd agro-manager
+npm run build:pages
+```
+
+Команда собирает статическую версию с `REACT_APP_DEMO=true`. В этом режиме сайт
+полностью работает без Express API: API-ответы и DOCX-генерация выполняются на
+frontend-стороне.
+
+Публикация настроена через `.github/workflows/deploy-pages.yml`: при push в
+`main` GitHub Actions выполняет `npm ci`, `npm run type-check`,
+`npm run build:pages` и разворачивает папку `build` на GitHub Pages.
 
 ### Переменные окружения (опционально)
 

@@ -1,4 +1,4 @@
-import { API_URL } from "../config";
+import { API_URL, IS_DEMO_MODE } from "../config";
 import type {
   CreateDocumentTemplateInput,
   DocumentTemplatesCatalog,
@@ -7,6 +7,12 @@ import type {
   DocumentTemplateType,
   GenerateDocumentInput,
 } from "../../entities/document/types";
+import {
+  createDemoDocumentTemplate,
+  deleteDemoDocumentTemplate,
+  fetchDemoDocumentTemplates,
+  generateDemoDocument,
+} from "../demo/documents";
 
 const JSON_HEADERS = {
   "Content-Type": "application/json",
@@ -110,6 +116,10 @@ async function requestBlob(path: string, body: unknown): Promise<Blob> {
 }
 
 export const fetchDocumentTemplates = async (): Promise<DocumentTemplatesCatalog> => {
+  if (IS_DEMO_MODE) {
+    return fetchDemoDocumentTemplates();
+  }
+
   const payload = await requestJson<
     ApiSuccessEnvelope<{
       templates: BackendTemplate[];
@@ -129,6 +139,10 @@ export const fetchDocumentTemplates = async (): Promise<DocumentTemplatesCatalog
 export const createDocumentTemplate = async (
   payload: CreateDocumentTemplateInput,
 ): Promise<DocumentTemplate> => {
+  if (IS_DEMO_MODE) {
+    return createDemoDocumentTemplate(payload);
+  }
+
   const response = await requestJson<
     ApiSuccessEnvelope<{ template: BackendTemplate }>
   >("/documents/templates", {
@@ -140,6 +154,10 @@ export const createDocumentTemplate = async (
 };
 
 export const deleteDocumentTemplate = async (id: string): Promise<{ ok: true }> => {
+  if (IS_DEMO_MODE) {
+    return deleteDemoDocumentTemplate(id);
+  }
+
   await requestJson<ApiSuccessEnvelope<{ id: string; deleted: true }>>(
     `/documents/templates/${id}`,
     {
@@ -151,4 +169,4 @@ export const deleteDocumentTemplate = async (id: string): Promise<{ ok: true }> 
 };
 
 export const generateDocument = (payload: GenerateDocumentInput): Promise<Blob> =>
-  requestBlob("/documents/generate", payload);
+  IS_DEMO_MODE ? generateDemoDocument(payload) : requestBlob("/documents/generate", payload);
