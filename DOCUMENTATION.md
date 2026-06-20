@@ -1037,7 +1037,7 @@ npm run build:pages
 frontend-стороне.
 
 Публикация настроена через `.github/workflows/deploy-pages.yml`: при push в
-`main` GitHub Actions выполняет `npm ci`, `npm run type-check`,
+`main` GitHub Actions выполняет `npm ci --legacy-peer-deps`, `npm run type-check`,
 `npm run build:pages` и разворачивает папку `build` на GitHub Pages.
 
 ### Переменные окружения (опционально)

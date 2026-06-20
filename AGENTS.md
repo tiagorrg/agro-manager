@@ -39,6 +39,7 @@
 
 - `src/shared/lib/useFetch.ts` не перезапускается от изменения `fetcher`; не менять его поведение без прямой задачи.
 - `src/shared/demo/` — статический demo-слой для GitHub Pages. Он должен повторять формы ответов Express API и хранить изменяемые данные в `localStorage`.
+- GitHub Pages workflow ставит зависимости через `npm ci --legacy-peer-deps`, потому что CRA `react-scripts@5` имеет peer-конфликт с TypeScript 5.
 - В `src/store/mapStore.ts` `selectedDetail === null` может означать и "ничего не выбрано", и "идёт загрузка"; сначала проверяй `selectedFieldId`.
 - `widgets/` и `shared/ui-kit/` не трогай без явной причины.
 - Контракт документов проходит по цепочке `backend/src/services/documents -> backend/src/controllers/documentsController.js -> src/shared/api/documents.ts -> src/pages/Documents`.
