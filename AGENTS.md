@@ -44,7 +44,7 @@
 - `widgets/` и `shared/ui-kit/` не трогай без явной причины.
 - Контракт документов проходит по цепочке `backend/src/services/documents -> backend/src/controllers/documentsController.js -> src/shared/api/documents.ts -> src/pages/Documents`.
 - Backend документов принимает DOCX-шаблоны как `templateContentBase64` в JSON; лимит `express.json` на сервере уже повышен под этот сценарий.
-- В demo-режиме `/documents` использует клиентский `docxtemplater` и сохраняет шаблоны в `localStorage`; backend-режим оставлен без изменений.
+- В demo-режиме `/documents` использует клиентский `docxtemplater`, стартовые шаблоны из `public/demo-document-templates/` и пользовательские шаблоны из `localStorage`; backend-режим оставлен без изменений.
 - Если меняешь архитектурные правила, маршруты, API-контракты или ограничения проекта, обнови `AGENTS.md` и при необходимости `DOCUMENTATION.md`.
 
 ## После изменений

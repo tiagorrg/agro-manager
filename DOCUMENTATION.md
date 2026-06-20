@@ -519,9 +519,10 @@ Express API. Вместо этого `shared/api/client.ts` передает JSO
 публичная защита не зависела от доступности внешнего Open-Meteo API.
 
 Для `/documents` используется отдельный demo-сервис
-`src/shared/demo/documents.ts`: DOCX-шаблоны валидируются и сохраняются в
-`localStorage`, а генерация выполняется в браузере через `docxtemplater` и
-`pizzip`.
+`src/shared/demo/documents.ts`: три стартовых DOCX-шаблона подгружаются из
+`public/demo-document-templates/`, пользовательские шаблоны валидируются и
+сохраняются в `localStorage`, а генерация выполняется в браузере через
+`docxtemplater` и `pizzip`.
 
 ---
 
@@ -971,7 +972,10 @@ Query-параметры: `fieldId`. Возвращает обогащённые
 - ежедневный реестр выполненных полевых работ;
 - реестр выполненных работ за период.
 
-Шаблоны можно загрузить прямо в раздел `Документы`. Их исходник генерируется скриптом `scripts/generate_kfh_doc_templates.py`.
+Эти же файлы продублированы в `public/demo-document-templates/`, чтобы demo-сборка
+для GitHub Pages сразу показывала три валидных шаблона в разделе `Документы`
+без ручной загрузки. Пользовательские шаблоны в demo-режиме продолжают храниться
+локально в браузере.
 
 ---
 
@@ -1032,9 +1036,10 @@ cd agro-manager
 npm run build:pages
 ```
 
-Команда собирает статическую версию с `REACT_APP_DEMO=true`. В этом режиме сайт
-полностью работает без Express API: API-ответы и DOCX-генерация выполняются на
-frontend-стороне.
+Команда очищает папку `build` и собирает статическую версию с
+`REACT_APP_DEMO=true`. В этом режиме сайт полностью работает без Express API:
+API-ответы и DOCX-генерация выполняются на frontend-стороне, а стартовые
+DOCX-шаблоны документов копируются из `public/demo-document-templates/`.
 
 Публикация настроена через `.github/workflows/deploy-pages.yml`: при push в
 `main` GitHub Actions выполняет `npm ci --legacy-peer-deps`, `npm run type-check`,

@@ -118,8 +118,42 @@ const ENTERPRISE = {
 };
 
 const STORAGE_KEY = "agro_demo_v1:document_templates";
+const HIDDEN_DEFAULT_TEMPLATES_KEY = "agro_demo_v1:hidden_default_document_templates";
 const DOCX_TOKEN_PATTERN = /\[([a-zA-Z0-9_]+)\]/g;
 const XML_FILES_PATTERN = /^word\/(document|header\d+|footer\d+)\.xml$/;
+const DEFAULT_TEMPLATES_CREATED_AT = "2026-06-20T00:00:00.000Z";
+
+const DEFAULT_TEMPLATE_MANIFEST: Array<{
+  id: string;
+  name: string;
+  fileName: string;
+  type: DocumentTemplateType;
+  updatedAt: string;
+}> = [
+  {
+    id: "demo-template-single-operation-act",
+    name: "Внутренний акт выполнения полевой операции",
+    fileName: "vnutrenniy-akt-vypolneniya-polevoy-operacii.docx",
+    type: TEMPLATE_TYPES.SINGLE,
+    updatedAt: "2026-06-20T00:03:00.000Z",
+  },
+  {
+    id: "demo-template-daily-work-registry",
+    name: "Ежедневный реестр выполненных полевых работ",
+    fileName: "ezhednevnyy-reestr-vypolnennykh-polevykh-rabot.docx",
+    type: TEMPLATE_TYPES.REGISTRY,
+    updatedAt: "2026-06-20T00:02:00.000Z",
+  },
+  {
+    id: "demo-template-period-work-registry",
+    name: "Реестр выполненных работ за период",
+    fileName: "reestr-vypolnennykh-rabot-za-period.docx",
+    type: TEMPLATE_TYPES.REGISTRY,
+    updatedAt: "2026-06-20T00:01:00.000Z",
+  },
+];
+
+let defaultTemplatesPromise: Promise<StoredDocumentTemplate[]> | null = null;
 
 function readTemplates(): StoredDocumentTemplate[] {
   try {
@@ -132,6 +166,21 @@ function readTemplates(): StoredDocumentTemplate[] {
 
 function writeTemplates(templates: StoredDocumentTemplate[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(templates));
+}
+
+function readHiddenDefaultTemplateIds() {
+  try {
+    const raw = localStorage.getItem(HIDDEN_DEFAULT_TEMPLATES_KEY);
+    return new Set(raw ? (JSON.parse(raw) as string[]) : []);
+  } catch {
+    return new Set<string>();
+  }
+}
+
+function hideDefaultTemplate(id: string) {
+  const hiddenIds = readHiddenDefaultTemplateIds();
+  hiddenIds.add(id);
+  localStorage.setItem(HIDDEN_DEFAULT_TEMPLATES_KEY, JSON.stringify([...hiddenIds]));
 }
 
 function publicTemplate(template: StoredDocumentTemplate): DocumentTemplate {
@@ -221,9 +270,81 @@ function validateTemplate(type: DocumentTemplateType, zip: PizZip) {
   };
 }
 
+function publicAssetUrl(fileName: string) {
+  const publicUrl = (process.env.PUBLIC_URL || "").replace(/\/$/, "");
+  return `${publicUrl}/demo-document-templates/${fileName}`;
+}
+
+function blobToBase64(blob: Blob) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        resolve(reader.result);
+        return;
+      }
+
+      reject(new Error("Не удалось прочитать DOCX-шаблон."));
+    };
+    reader.onerror = () => reject(new Error("Не удалось прочитать DOCX-шаблон."));
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function fetchTemplateContentBase64(fileName: string) {
+  const response = await fetch(publicAssetUrl(fileName));
+
+  if (!response.ok) {
+    throw new Error(`Не удалось загрузить демо-шаблон ${fileName}.`);
+  }
+
+  return blobToBase64(await response.blob());
+}
+
+async function loadDefaultTemplates() {
+  if (!defaultTemplatesPromise) {
+    defaultTemplatesPromise = Promise.all(
+      DEFAULT_TEMPLATE_MANIFEST.map(async (template) => {
+        const contentBase64 = await fetchTemplateContentBase64(template.fileName);
+        const zip = getZip(contentBase64);
+        const validation = validateTemplate(template.type, zip);
+
+        return {
+          ...template,
+          availableTokens: TOKEN_CATALOG_BY_TYPE[template.type],
+          detectedTokens: validation.detectedTokens,
+          unknownTokens: validation.unknownTokens,
+          validationErrors: validation.validationErrors,
+          hasItemsBlock: validation.hasItemsBlock,
+          isValid: validation.isValid,
+          supportedModes: SUPPORTED_MODES[template.type],
+          createdAt: DEFAULT_TEMPLATES_CREATED_AT,
+          contentBase64,
+        };
+      }),
+    );
+  }
+
+  return defaultTemplatesPromise;
+}
+
+function isDefaultTemplateId(id: string) {
+  return DEFAULT_TEMPLATE_MANIFEST.some((template) => template.id === id);
+}
+
+async function getAllTemplates() {
+  const hiddenDefaultTemplateIds = readHiddenDefaultTemplateIds();
+  const defaultTemplates = (await loadDefaultTemplates()).filter(
+    (template) => !hiddenDefaultTemplateIds.has(template.id),
+  );
+
+  return [...defaultTemplates, ...readTemplates()];
+}
+
 export async function fetchDemoDocumentTemplates(): Promise<DocumentTemplatesCatalog> {
   return {
-    templates: readTemplates().map(publicTemplate),
+    templates: (await getAllTemplates()).map(publicTemplate),
     tokenCatalogByType: TOKEN_CATALOG_BY_TYPE,
   };
 }
@@ -260,6 +381,11 @@ export async function createDemoDocumentTemplate(
 }
 
 export async function deleteDemoDocumentTemplate(id: string): Promise<{ ok: true }> {
+  if (isDefaultTemplateId(id)) {
+    hideDefaultTemplate(id);
+    return { ok: true };
+  }
+
   writeTemplates(readTemplates().filter((template) => template.id !== id));
   return { ok: true };
 }
@@ -407,7 +533,7 @@ function replaceRegistryControlTags(zip: PizZip) {
 }
 
 export async function generateDemoDocument(payload: GenerateDocumentInput): Promise<Blob> {
-  const template = readTemplates().find((item) => item.id === payload.templateId);
+  const template = (await getAllTemplates()).find((item) => item.id === payload.templateId);
 
   if (!template) {
     throw new Error("Шаблон не найден.");
