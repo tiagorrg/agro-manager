@@ -21,6 +21,13 @@ code {
   outline: none;
 }
 
+/* Leaflet использует внутренние z-index до 700; изолируем карту от навигации и модалок. */
+.leaflet-container {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+}
+
 @media print {
   body {
     background: #fff;

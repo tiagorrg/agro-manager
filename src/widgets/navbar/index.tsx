@@ -68,7 +68,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-[1000]">
       <nav
         className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-4 lg:gap-8"
         aria-label="Основная навигация"
@@ -141,7 +141,7 @@ export default function Navbar() {
       </nav>
 
       <div
-        className={`fixed inset-0 z-[80] md:hidden transition ${
+        className={`fixed inset-0 z-[1100] md:hidden transition ${
           menuOpen ? "pointer-events-auto" : "pointer-events-none"
         }`}
         aria-hidden={!menuOpen}
