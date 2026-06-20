@@ -237,13 +237,30 @@ export default function DocumentsPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] items-start">
-        <div className="flex flex-col gap-6">
+      <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] items-start">
+        <div className="contents xl:flex xl:flex-col xl:gap-6">
           <DocumentTemplateUploadForm
             isSubmitting={isCreating}
             error={createError}
             onSubmit={handleCreateTemplate}
           />
+        </div>
+
+        <div className="contents xl:block">
+          <DocumentGenerationPanel
+            templates={templates}
+            operations={operations}
+            fields={availableFields}
+            isLoadingMeta={templatesLoading || operationsLoading}
+            operationsError={operationsError}
+            isGenerating={isGenerating}
+            generationError={generationError}
+            generationSuccess={generationSuccess}
+            onGenerate={handleGenerateDocument}
+          />
+        </div>
+
+        <div className="xl:col-start-1 xl:row-start-2">
           <DocumentTemplatesPanel
             templates={templates}
             tokenCatalogByType={tokenCatalogByType}
@@ -253,18 +270,6 @@ export default function DocumentsPage() {
             onDelete={handleDeleteTemplate}
           />
         </div>
-
-        <DocumentGenerationPanel
-          templates={templates}
-          operations={operations}
-          fields={availableFields}
-          isLoadingMeta={templatesLoading || operationsLoading}
-          operationsError={operationsError}
-          isGenerating={isGenerating}
-          generationError={generationError}
-          generationSuccess={generationSuccess}
-          onGenerate={handleGenerateDocument}
-        />
       </div>
     </div>
   );

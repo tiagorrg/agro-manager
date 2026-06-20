@@ -79,7 +79,7 @@ export default function DocumentTemplateUploadForm({
   };
 
   return (
-    <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-4">
+    <section className="min-w-0 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <h2 className="text-lg font-semibold text-gray-800">Загрузить шаблон</h2>
         <p className="text-sm text-gray-400">
@@ -88,8 +88,8 @@ export default function DocumentTemplateUploadForm({
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1.5">
+      <form onSubmit={handleSubmit} className="min-w-0 flex flex-col gap-4">
+        <div className="min-w-0 flex flex-col gap-1.5">
           <label htmlFor="document-template-name" className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
             Название шаблона
           </label>
@@ -102,7 +102,7 @@ export default function DocumentTemplateUploadForm({
           />
         </div>
 
-        <div className="flex flex-col gap-1.5">
+        <div className="min-w-0 flex flex-col gap-1.5">
           <label htmlFor="document-template-type" className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
             Тип шаблона
           </label>
@@ -115,18 +115,18 @@ export default function DocumentTemplateUploadForm({
           />
         </div>
 
-        <div className="flex flex-col gap-1.5">
+        <div className="min-w-0 flex flex-col gap-1.5">
           <label htmlFor="document-template-file" className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
             DOCX-файл
           </label>
           <label
             htmlFor="document-template-file"
-            className="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-4 text-sm text-gray-500 hover:border-green-300 hover:bg-green-50/50 transition-colors cursor-pointer"
+            className="min-w-0 rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-4 text-sm text-gray-500 hover:border-green-300 hover:bg-green-50/50 transition-colors cursor-pointer"
           >
-            <span className="block font-medium text-gray-700">
+            <span className="block break-words font-medium text-gray-700">
               {file ? file.name : "Выберите или перетащите шаблон"}
             </span>
-            <span className="block mt-1 text-xs text-gray-400">
+            <span className="block mt-1 break-words text-xs text-gray-400">
               Пример маркеров: `[document_date]`, `[field_name]`, `[items_start]...[items_end]`
             </span>
           </label>

@@ -62,12 +62,12 @@ function TokenList({
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex min-w-0 flex-wrap gap-2">
       {tokens.map((token) => (
         <span
           key={token}
           className={[
-            "px-2 py-1 rounded-full text-[11px] font-medium border",
+            "break-all px-2 py-1 rounded-full text-[11px] font-medium border",
             tone === "danger"
               ? "bg-red-50 text-red-600 border-red-100"
               : "bg-gray-50 text-gray-600 border-gray-200",
@@ -116,7 +116,7 @@ export default function DocumentTemplatesPanel({
   );
 
   return (
-    <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-5">
+    <section className="min-w-0 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-5">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-gray-800">Шаблоны</h2>
@@ -129,7 +129,7 @@ export default function DocumentTemplatesPanel({
         )}
       </div>
 
-      <div className="rounded-2xl border border-amber-100 bg-amber-50/70 p-4">
+      <div className="min-w-0 rounded-2xl border border-amber-100 bg-amber-50/70 p-4">
         <button
           type="button"
           onClick={() => setIsCheatSheetOpen((previous) => !previous)}
@@ -154,18 +154,18 @@ export default function DocumentTemplatesPanel({
         {isCheatSheetOpen && (
           <div id="document-token-cheat-sheet" className="mt-3 grid gap-3 xl:grid-cols-2">
             {tokenGroups.map(({ type, groups }) => (
-              <div key={type} className="rounded-xl bg-white/80 border border-amber-100 p-3">
+              <div key={type} className="min-w-0 rounded-xl bg-white/80 border border-amber-100 p-3">
                 <p className="text-xs font-semibold text-gray-700">{TEMPLATE_TYPE_LABELS[type]}</p>
                 <div className="mt-3 grid gap-3">
                   {Object.entries(groups).map(([section, entries]) => (
-                    <div key={section} className="rounded-lg border border-gray-100 bg-gray-50/70 p-3">
+                    <div key={section} className="min-w-0 rounded-lg border border-gray-100 bg-gray-50/70 p-3">
                       <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
                         {TOKEN_SECTION_LABELS[section as keyof typeof TOKEN_SECTION_LABELS]}
                       </p>
                       <ul className="mt-2 grid gap-2">
                         {entries.map((entry) => (
-                          <li key={`${type}-${entry.token}`} className="text-xs text-gray-600 leading-5">
-                            <span className="font-mono text-[11px] text-gray-800">[{entry.token}]</span>
+                          <li key={`${type}-${entry.token}`} className="break-words text-xs text-gray-600 leading-5">
+                            <span className="break-all font-mono text-[11px] text-gray-800">[{entry.token}]</span>
                             {" — "}
                             {entry.description}
                           </li>
@@ -180,7 +180,7 @@ export default function DocumentTemplatesPanel({
         )}
       </div>
 
-      <div className="rounded-2xl border border-gray-100 bg-gray-50/40 p-4">
+      <div className="min-w-0 rounded-2xl border border-gray-100 bg-gray-50/40 p-4">
         <button
           type="button"
           onClick={() => {
@@ -233,7 +233,7 @@ export default function DocumentTemplatesPanel({
                 {templates.map((template) => (
                   <article
                     key={template.id}
-                    className="rounded-2xl border border-gray-100 bg-white p-4 flex flex-col gap-4"
+                    className="min-w-0 rounded-2xl border border-gray-100 bg-white p-4 flex flex-col gap-4"
                   >
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div className="min-w-0">
@@ -252,7 +252,7 @@ export default function DocumentTemplatesPanel({
                             {template.isValid ? "Готов к использованию" : "Нужна правка"}
                           </span>
                         </div>
-                        <p className="mt-1 text-sm text-gray-500">{template.fileName}</p>
+                        <p className="mt-1 break-words text-sm text-gray-500">{template.fileName}</p>
                       </div>
 
                       <button
@@ -265,26 +265,26 @@ export default function DocumentTemplatesPanel({
                       </button>
                     </div>
 
-                    <dl className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                      <div className="rounded-xl bg-gray-50/60 border border-gray-100 p-3">
+                    <dl className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                      <div className="min-w-0 rounded-xl bg-gray-50/60 border border-gray-100 p-3">
                         <dt className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Тип</dt>
                         <dd className="mt-1 text-sm font-medium text-gray-700">
                           {TEMPLATE_TYPE_LABELS[template.type]}
                         </dd>
                       </div>
-                      <div className="rounded-xl bg-gray-50/60 border border-gray-100 p-3">
+                      <div className="min-w-0 rounded-xl bg-gray-50/60 border border-gray-100 p-3">
                         <dt className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Режимы</dt>
                         <dd className="mt-1 text-sm font-medium text-gray-700">
                           {template.supportedModes.map((mode) => GENERATION_MODE_LABELS[mode]).join(", ")}
                         </dd>
                       </div>
-                      <div className="rounded-xl bg-gray-50/60 border border-gray-100 p-3">
+                      <div className="min-w-0 rounded-xl bg-gray-50/60 border border-gray-100 p-3">
                         <dt className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Items-блок</dt>
                         <dd className="mt-1 text-sm font-medium text-gray-700">
                           {template.hasItemsBlock ? "Есть" : "Нет"}
                         </dd>
                       </div>
-                      <div className="rounded-xl bg-gray-50/60 border border-gray-100 p-3">
+                      <div className="min-w-0 rounded-xl bg-gray-50/60 border border-gray-100 p-3">
                         <dt className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Обновлён</dt>
                         <dd className="mt-1 text-sm font-medium text-gray-700">
                           {formatDateTime(template.updatedAt)}
@@ -292,8 +292,8 @@ export default function DocumentTemplatesPanel({
                       </div>
                     </dl>
 
-                    <div className="grid gap-4 xl:grid-cols-[1.4fr_1fr]">
-                      <div className="rounded-xl bg-gray-50/60 border border-gray-100 p-3 flex flex-col gap-2">
+                    <div className="grid min-w-0 gap-4 xl:grid-cols-[1.4fr_1fr]">
+                      <div className="min-w-0 rounded-xl bg-gray-50/60 border border-gray-100 p-3 flex flex-col gap-2">
                         <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
                           Найденные маркеры
                         </p>
@@ -304,7 +304,7 @@ export default function DocumentTemplatesPanel({
                         />
                       </div>
 
-                      <div className="rounded-xl bg-gray-50/60 border border-gray-100 p-3 flex flex-col gap-3">
+                      <div className="min-w-0 rounded-xl bg-gray-50/60 border border-gray-100 p-3 flex flex-col gap-3">
                         <div>
                           <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
                             Неизвестные маркеры

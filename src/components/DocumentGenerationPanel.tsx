@@ -243,7 +243,7 @@ export default function DocumentGenerationPanel({
   };
 
   return (
-    <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-5">
+    <section className="min-w-0 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-5">
       <div className="flex flex-col gap-1">
         <h2 className="text-lg font-semibold text-gray-800">Генерация документа</h2>
         <p className="text-sm text-gray-400">
@@ -251,23 +251,23 @@ export default function DocumentGenerationPanel({
         </p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
-        <div className="rounded-xl border border-gray-100 bg-gray-50/80 p-3">
+      <div className="grid min-w-0 gap-3 sm:grid-cols-3">
+        <div className="min-w-0 rounded-xl border border-gray-100 bg-gray-50/80 p-3">
           <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Готовые шаблоны</p>
           <p className="mt-1 text-lg font-semibold text-gray-800">{validTemplates.length}</p>
         </div>
-        <div className="rounded-xl border border-gray-100 bg-gray-50/80 p-3">
+        <div className="min-w-0 rounded-xl border border-gray-100 bg-gray-50/80 p-3">
           <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Операции</p>
           <p className="mt-1 text-lg font-semibold text-gray-800">{operations.length}</p>
         </div>
-        <div className="rounded-xl border border-gray-100 bg-gray-50/80 p-3">
+        <div className="min-w-0 rounded-xl border border-gray-100 bg-gray-50/80 p-3">
           <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Поля</p>
           <p className="mt-1 text-lg font-semibold text-gray-800">{fields.length}</p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1.5">
+      <form onSubmit={handleSubmit} className="min-w-0 flex flex-col gap-4">
+        <div className="min-w-0 flex flex-col gap-1.5">
           <label htmlFor="document-generate-template" className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
             Шаблон
           </label>
@@ -276,6 +276,7 @@ export default function DocumentGenerationPanel({
             value={selectedTemplate?.id ?? ""}
             onChange={setTemplateId}
             disabled={isLoadingMeta || validTemplates.length === 0}
+            className="min-w-0"
             options={validTemplates.map((template) => ({
               value: template.id,
               label: `${template.name} · ${TEMPLATE_TYPE_LABELS[template.type]}`,
@@ -284,7 +285,7 @@ export default function DocumentGenerationPanel({
           />
         </div>
 
-        <div className="flex flex-col gap-1.5">
+        <div className="min-w-0 flex flex-col gap-1.5">
           <label htmlFor="document-generate-mode" className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
             Режим генерации
           </label>
@@ -293,19 +294,21 @@ export default function DocumentGenerationPanel({
             value={mode}
             onChange={(value) => setMode(value as DocumentGenerationMode)}
             disabled={!selectedTemplate}
+            className="min-w-0"
             options={modeOptions}
             placeholder="Выберите режим"
           />
         </div>
 
         {mode === "by_operation" && (
-          <div className="flex flex-col gap-1.5">
+          <div className="min-w-0 flex flex-col gap-1.5">
             <label htmlFor="document-generate-operation" className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
               Операция
             </label>
             <Select
               id="document-generate-operation"
               value={operationId}
+              className="min-w-0"
               onChange={(value) => {
                 setOperationId(value);
                 setFormError(null);
@@ -319,7 +322,7 @@ export default function DocumentGenerationPanel({
 
         {mode === "by_day" && (
           <>
-            <div className="flex flex-col gap-1.5">
+            <div className="min-w-0 flex flex-col gap-1.5">
               <label htmlFor="document-generate-date" className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
                 Дата
               </label>
@@ -333,13 +336,14 @@ export default function DocumentGenerationPanel({
                 }}
               />
             </div>
-            <div className="flex flex-col gap-1.5">
+            <div className="min-w-0 flex flex-col gap-1.5">
               <label htmlFor="document-generate-field-day" className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
                 Поле
               </label>
               <Select
                 id="document-generate-field-day"
                 value={fieldId}
+                className="min-w-0"
                 onChange={(value) => {
                   setFieldId(value);
                   setFormError(null);
@@ -352,8 +356,8 @@ export default function DocumentGenerationPanel({
 
         {mode === "by_period" && (
           <>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex flex-col gap-1.5">
+            <div className="grid min-w-0 gap-4 sm:grid-cols-2">
+              <div className="min-w-0 flex flex-col gap-1.5">
                 <label htmlFor="document-generate-date-from" className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
                   Период с
                 </label>
@@ -367,7 +371,7 @@ export default function DocumentGenerationPanel({
                   }}
                 />
               </div>
-              <div className="flex flex-col gap-1.5">
+              <div className="min-w-0 flex flex-col gap-1.5">
                 <label htmlFor="document-generate-date-to" className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
                   Период по
                 </label>
@@ -382,13 +386,14 @@ export default function DocumentGenerationPanel({
                 />
               </div>
             </div>
-            <div className="flex flex-col gap-1.5">
+            <div className="min-w-0 flex flex-col gap-1.5">
               <label htmlFor="document-generate-field-period" className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
                 Поле
               </label>
               <Select
                 id="document-generate-field-period"
                 value={fieldId}
+                className="min-w-0"
                 onChange={(value) => {
                   setFieldId(value);
                   setFormError(null);
